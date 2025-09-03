@@ -7,14 +7,6 @@ import sys
 from pathlib import Path
 from typing import List, Dict
 
-try:
-    from foamlib import FoamCase, FoamFile, FoamFieldFile
-except Exception:
-    FoamCase = None
-    FoamFile = None
-    FoamFieldFile = None
-
-
 # ------------------------------ util ------------------------------
 
 def run(cmd: List[str], cwd: Path):
@@ -45,14 +37,14 @@ FoamFile
     location    "system";
     object      controlDict;
 }
-application     chtMultiRegionFoam;
+application     chtMultiRegionSimpleFoam;
 startFrom       startTime;
 startTime       0;
 stopAt          endTime;
-endTime         10;
-deltaT          0.05;
+endTime         200;
+deltaT          1;
 writeControl    timeStep;
-writeInterval   100;
+writeInterval   200;
 purgeWrite      0;
 writeFormat     ascii;
 writePrecision  7;
@@ -332,13 +324,13 @@ FoamFile
     object T;
 }
 dimensions      [0 0 0 1 0 0 0];
-internalField   uniform 300;
+internalField   uniform {t_amb};
 boundaryField
 {
     inlet
     {
         type fixedValue;
-        value uniform 300;
+        value uniform {t_amb};
     }
     outlet
     {
@@ -400,7 +392,7 @@ FoamFile
     object T;
 }
 dimensions      [0 0 0 1 0 0 0];
-internalField   uniform 300;
+internalField   uniform {t_amb};
 boundaryField
 {
     "(inlet|outlet)"
@@ -466,27 +458,6 @@ HEAT_SOURCE_SOLID_TMPL = """
 
 # ------------------------------ principale ------------------------------
 
-def parse_args():
-    ap = argparse.ArgumentParser(description="Auto-builder CHT OpenFOAM da Gmsh")
-    ap.add_argument("--msh", required=True, help="percorso alla mesh .msh")
-    ap.add_argument("--case", required=True, help="cartella di output del case")
-    ap.add_argument("--Uinlet", type=float, default=1.0, help="velocità inlet [m/s]")
-    ap.add_argument("--rhoFluid", type=float, default=1.2)
-    ap.add_argument("--cpFluid", type=float, default=1007.0)
-    ap.add_argument("--kFluid", type=float, default=0.026)
-    ap.add_argument("--kPcb", type=float, default=6.0)
-    ap.add_argument("--rhoSolid", type=float, default=2700.0)
-    ap.add_argument("--cpSolid", type=float, default=900.0)
-    ap.add_argument("--kCmp", type=str, default="", help="lista k component_i separata da virgole")
-    ap.add_argument("--QCmp", type=str, default="", help="lista potenze [W] per component_i")
-    ap.add_argument("--epsHS", type=str, default="", help="lista porosità heatsink_i (0–1)")
-    ap.add_argument("--dHS", type=str, default="", help="lista diametro caratteristico [m] per heatsink_i")
-    ap.add_argument("--kHS", type=str, default="", help="lista k_eff [W/m/K] termica per heatsink_i (usata in chiusura energia)")
-    ap.add_argument("--run", action="store_true", help="lancia la simulazione")
-    ap.add_argument("--vtk", action="store_true", help="esporta VTK a fine run")
-    return ap.parse_args()
-
-
 def to_list_floats(s: str) -> List[float]:
     return [float(x.strip()) for x in s.split(',') if x.strip()] if s else []
 
@@ -494,9 +465,6 @@ def to_list_floats(s: str) -> List[float]:
 def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kCmp,QCmp,epsHS,dHS,kHS)
     case_dir = Path(case).absolute()
     msh = Path(msh).absolute()
-
-    if FoamCase is None:
-        print("[ATTENZIONE] foamlib non disponibile: procederò con scrittura file grezza.")
 
     # 1) crea scheletro case
     for sub in ["system", "constant", "0", "constant/fluid"]:
@@ -622,11 +590,5 @@ def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kC
     # In molti workflow chtMultiRegionFoam richiede cartelle per ogni regione come già create sopra.
 
     # 7) opzionale: lancia solver
-    if run:
-        run(["chtMultiRegionFoam", "-case", str(case_dir)], cwd=case_dir)
-        if vtk:
-            # preferisci writeVTK
-            run(["postProcess", "-func", "writeVTK"], cwd=case_dir)
-
-    print("Case preparato in:", case_dir)
-    print("Componenti:", len(components), "Heatsink:", len(heatsinks))
+    run(["chtMultiRegionSimpleFoam", "-case", str(case_dir)], cwd=case_dir)
+    run(["postProcess", "-func", "writeVTK"], cwd=case_dir)
