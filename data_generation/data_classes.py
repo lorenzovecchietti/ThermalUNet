@@ -16,8 +16,6 @@ BOUNDS = {
     "k_comps": (10.0, 100.0),
     "k_heatsinks": (100.0, 300.0),
     "porosity_heatsinks": (0.1, 0.5),
-    "inlet": (0.3, 1),
-    "outlet": (0.3, 1),
 }
 
 
@@ -62,8 +60,6 @@ class CircuitBoard:
     pcb_h: float
     pcb_w: float
     n_up: int
-    inlet: float
-    outlet: float
     components_w: List[float]
     components_h: List[float]
     heatsink: List[int]
@@ -76,8 +72,6 @@ class CircuitBoard:
             "pcb_h": self.pcb_h,
             "pcb_w": self.pcb_w,
             "n_up": self.n_up,
-            "inlet": self.inlet,
-            "outlet": self.outlet,
         }
 
         # Single attributes

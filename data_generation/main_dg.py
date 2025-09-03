@@ -24,7 +24,6 @@ l_bounds_full = (
     + [BOUNDS["k_pcb"][0]]
     + [BOUNDS["k_comps"][0]] * n_comps
     + [BOUNDS["k_heatsinks"][0]] * n_comps
-    + [BOUNDS["inlet"][0], BOUNDS["outlet"][0]]
     + [BOUNDS["porosity_heatsinks"][0]] * n_comps
 )
 u_bounds_full = (
@@ -37,7 +36,6 @@ u_bounds_full = (
     + [BOUNDS["k_pcb"][1]]
     + [BOUNDS["k_comps"][1]] * n_comps
     + [BOUNDS["k_heatsinks"][1]] * n_comps
-    + [BOUNDS["inlet"][1], BOUNDS["outlet"][1]]
     + [BOUNDS["porosity_heatsinks"][1]] * n_comps
 )
 
@@ -95,12 +93,6 @@ for scaled in scaled_samples:
     k_heatsinks = scaled[idx : idx + n_comps].tolist()
     idx += n_comps
 
-    inlet = scaled[idx]
-    idx += 1
-
-    outlet = scaled[idx]
-    idx += 1
-
     porosity_heatsinks = scaled[idx : idx + n_comps].tolist()
     idx += n_comps
 
@@ -114,8 +106,6 @@ for scaled in scaled_samples:
         components_w=components_w,
         components_h=components_h,
         heatsink=heatsink,
-        inlet=inlet,  # Use the scaled inlet value
-        outlet=outlet,  # Use the scaled outlet value
     )
     thermal_props = ThermalProperties(
         p_pcb=p_pcb,
