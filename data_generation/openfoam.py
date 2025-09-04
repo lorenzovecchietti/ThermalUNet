@@ -462,7 +462,7 @@ def to_list_floats(s: str) -> List[float]:
     return [float(x.strip()) for x in s.split(',') if x.strip()] if s else []
 
 
-def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kCmp,QCmp,epsHS,dHS,kHS)
+def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kCmp,QCmp,epsHS,dHS,kHS):
     case_dir = Path(case).absolute()
     msh = Path(msh).absolute()
 

@@ -5,6 +5,7 @@ from data_classes import BOUNDS, CircuitBoard, ThermalProperties
 from meshing import generate_gmsh_mesh
 from plotting import generate_images
 from scipy.stats import qmc
+from openfoam import create_case
 
 NUM_SAMPLES = 1
 
@@ -140,3 +141,20 @@ for i, dp in enumerate(design_points):
     mesh_files.append(mesh_file)
 
 generate_images(design_points, mesh_files, fig_dir)
+
+
+test_msh = "dp_0.msh"
+case = "./testCase"
+Uinlet=10
+rhoFluid=1
+cpFluid=2
+kFluid=2.5
+kPcb=3
+rhoSolid=4
+cpSolid=5
+kCmp=6
+QCmp=7
+epsHS=8
+dHS=9
+kHS=10
+create_case(test_msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kCmp,QCmp,epsHS,dHS,kHS)
