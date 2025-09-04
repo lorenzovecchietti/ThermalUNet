@@ -30,13 +30,13 @@ def write_text(path: Path, content: str):
 
 CONTROL_DICT = """
 FoamFile
-{
+{{
     version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
     object      controlDict;
-}
+}}
 application     chtMultiRegionSimpleFoam;
 startFrom       startTime;
 startTime       0;
@@ -58,26 +58,26 @@ lib           ("libfvOptions.so");
 
 FV_SCHEMES_BASE = """
 FoamFile
-{
+{{
     version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
     object      fvSchemes;
-}
+}}
 
 ddtSchemes
-{
+{{
     default         Euler;
-}
+}}
 
 gradSchemes
-{
+{{
     default         Gauss linear;
-}
+}}
 
 divSchemes
-{
+{{
     default         none;
     div(phi,U)      Gauss upwind;
     div(phi,h)      Gauss upwind;
@@ -85,132 +85,132 @@ divSchemes
     div(phi,k)      Gauss upwind;
     div(phi,epsilon) Gauss upwind;
     div((muEff*dev2(T(grad(U))))) Gauss linear;
-}
+}}
 
 laplacianSchemes
-{
+{{
     default         Gauss linear corrected;
-}
+}}
 
 interpolationSchemes
-{
+{{
     default         linear;
-}
+}}
 
 snGradSchemes
-{
+{{
     default         corrected;
-}
+}}
 """
 
 FV_SOLUTION_BASE = """
 FoamFile
-{
+{{
     version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
     object      fvSolution;
-}
+}}
 
 solvers
-{
+{{
     p_rgh
-    {
+    {{
         solver          GAMG;
         tolerance       1e-7;
         relTol          0.1;
         smoother        DIC;
-    }
+    }}
     h
-    {
+    {{
         solver          smoothSolver;
         smoother        symGaussSeidel;
         tolerance       1e-8;
         relTol          0.1;
-    }
+    }}
     U
-    {
+    {{
         solver          smoothSolver;
         smoother        symGaussSeidel;
         tolerance       1e-7;
         relTol          0.1;
-    }
-}
+    }}
+}}
 
 SIMPLE
-{
+{{
     nNonOrthogonalCorrectors 0;
-}
+}}
 
 PISO
-{
+{{
     nCorrectors     2;
     nNonOrthogonalCorrectors 0;
-}
+}}
 
 relaxationFactors
-{
+{{
     equations
-    {
+    {{
         "(h|e)" 1.0;
-    }
-}
+    }}
+}}
 """
 
 REGION_PROPERTIES_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class dictionary;
     location "constant";
     object  regionProperties;
-}
+}}
 regions
-{
+{{
     fluid (fluid);
     solid ({solid_regions});
-}
+}}
 
 interfaces (fluid_to_solids);
 fluid_to_solids
-{
+{{
     interfacePairs
     (
 {pairs}
     );
-}
+}}
 """
 
 TURB_PROPS_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class dictionary;
     object turbulenceProperties;
-}
+}}
 simulationType  RAS;
 RAS
-{
+{{
     RASModel        kEpsilon;
     turbulence      on;
     printCoeffs     off;
-}
+}}
 """
 
 THERMO_FLUID_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class dictionary;
     location "constant/fluid";
     object thermophysicalProperties;
-}
+}}
 thermoType
-{
+{{
     type            heRhoThermo;
     mixture         pureMixture;
     transport       const;
@@ -218,38 +218,38 @@ thermoType
     equationOfState perfectGas;
     specie          specie;
     energy          sensibleEnthalpy;
-}
+}}
 mixture
-{
+{{
     specie
-    {
+    {{
         molWeight   28.96;
-    }
+    }}
     thermodynamics
-    {
+    {{
         Cp          {cp};
         Hf          0;
-    }
+    }}
     transport
-    {
+    {{
         mu          1.8e-5;
         Pr          0.7;
         kappa       {k};
-    }
-}
+    }}
+}}
 """
 
 THERMO_SOLID_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class dictionary;
     location "constant/{solid}";
     object thermophysicalProperties;
-}
+}}
 thermoType
-{
+{{
     type            heSolidThermo;
     mixture         pureSolid;
     transport       const;
@@ -257,203 +257,203 @@ thermoType
     equationOfState rhoConst;
     specie          specie;
     energy          sensibleEnthalpy;
-}
+}}
 mixture
-{
+{{
     specie
-    {
+    {{
         molWeight   28.96;
-    }
+    }}
     thermodynamics
-    {
+    {{
         Cp          {cp};
         Hf          0;
-    }
+    }}
     transport
-    {
+    {{
         kappa       {k};
-    }
+    }}
     equationOfState
-    {
+    {{
         rho         {rho};
-    }
-}
+    }}
+}}
 """
 
 # Minimal field templates for 0/ of regions
 U_FLUID_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class volVectorField;
     location "0/fluid";
     object U;
-}
+}}
 dimensions      [0 1 -1 0 0 0 0];
 internalField   uniform (0 0 0);
 boundaryField
-{
+{{
     inlet
-    {
+    {{
         type fixedValue;
         value uniform ({U} 0 0);
-    }
+    }}
     outlet
-    {
+    {{
         type zeroGradient;
-    }
+    }}
     walls
-    {
+    {{
         type noSlip;
-    }
+    }}
     empty
-    {
+    {{
         type empty;
-    }
-}
+    }}
+}}
 """
 
 T_FLUID_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class volScalarField;
     location "0/fluid";
     object T;
-}
+}}
 dimensions      [0 0 0 1 0 0 0];
 internalField   uniform {t_amb};
 boundaryField
-{
+{{
     inlet
-    {
+    {{
         type fixedValue;
         value uniform {t_amb};
-    }
+    }}
     outlet
-    {
+    {{
         type zeroGradient;
-    }
+    }}
     walls
-    {
+    {{
         type zeroGradient;
-    }
+    }}
     empty
-    {
+    {{
         type empty;
-    }
-}
+    }}
+}}
 """
 
 P_RGH_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class volScalarField;
     location "0/fluid";
     object p_rgh;
-}
+}}
 dimensions      [1 -1 -2 0 0 0 0];
 internalField   uniform 0;
 boundaryField
-{
+{{
     inlet
-    {
+    {{
         type fixedFluxPressure;
         value uniform 0;
-    }
+    }}
     outlet
-    {
+    {{
         type fixedValue;
         value uniform 0;
-    }
+    }}
     walls
-    {
+    {{
         type fixedFluxPressure;
         value uniform 0;
-    }
+    }}
     empty
-    {
+    {{
         type empty;
-    }
-}
+    }}
+}}
 """
 
 T_SOLID_TMPL = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class volScalarField;
     location "0/{solid}";
     object T;
-}
+}}
 dimensions      [0 0 0 1 0 0 0];
 internalField   uniform {t_amb};
 boundaryField
-{
+{{
     "(inlet|outlet)"
-    {
+    {{
         type zeroGradient;
-    }
+    }}
     walls
-    {
+    {{
         type zeroGradient; // contatto fluido-solido gestito da interfaccia cht
-    }
+    }}
     empty
-    {
+    {{
         type empty;
-    }
-}
+    }}
+}}
 """
 
 # fvOptions: porosità (Darcy-Forchheimer) e sorgenti termiche
 FVOPTIONS_HEADER = """
 FoamFile
-{
+{{
     version 2.0;
     format ascii;
     class dictionary;
     location "constant";
     object fvOptions;
-}
+}}
 """
 
 POROSITY_BLOCK_TMPL = """
 {name}
-{
+{{
     type            explicitPorositySource;
     active          yes;
     selectionMode   cellZone;
     cellZone        {zone};
     explicitPorositySourceCoeffs
-    {
+    {{
         type            DarcyForchheimer;
         DarcyForchheimerCoeffs
-        {
+        {{
             d   ({d} {d} {d});    // coeff Darcy [1/m^2]
             f   ({f} {f} {f});    // coeff Forchheimer [1/m]
-        }
-    }
-}
+        }}
+    }}
+}}
 """
 
 HEAT_SOURCE_SOLID_TMPL = """
 {name}
-{
+{{
     type            scalarSemiImplicitSource;  // sorgente su T nella regione solida
     active          yes;
     selectionMode   cellZone;
     cellZone        {zone};
     volumeMode      absolute;                 // Q è potenza totale [W] distribuita sul cellZone
     injectionRateSuSp
-    {
+    {{
         T           ({Su} 0);                 // Su = Q/(rho*cp*V) in [K/s]; con absolute, usa Q totale → foam gestisce distribuzione volumetrica
-    }
-}
+    }}
+}}
 """
 
 # ------------------------------ principale ------------------------------
