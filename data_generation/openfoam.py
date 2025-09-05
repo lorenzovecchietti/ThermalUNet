@@ -30,13 +30,13 @@ def write_text(path: Path, content: str):
 
 CONTROL_DICT = """
 FoamFile
-{{
+{
     version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
     object      controlDict;
-}}
+}
 application     chtMultiRegionSimpleFoam;
 startFrom       startTime;
 startTime       0;
@@ -58,26 +58,26 @@ lib           ("libfvOptions.so");
 
 FV_SCHEMES_BASE = """
 FoamFile
-{{
+{
     version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
     object      fvSchemes;
-}}
+}
 
 ddtSchemes
-{{
+{
     default         Euler;
-}}
+}
 
 gradSchemes
-{{
+{
     default         Gauss linear;
-}}
+}
 
 divSchemes
-{{
+{
     default         none;
     div(phi,U)      Gauss upwind;
     div(phi,h)      Gauss upwind;
@@ -85,77 +85,77 @@ divSchemes
     div(phi,k)      Gauss upwind;
     div(phi,epsilon) Gauss upwind;
     div((muEff*dev2(T(grad(U))))) Gauss linear;
-}}
+}
 
 laplacianSchemes
-{{
+{
     default         Gauss linear corrected;
-}}
+}
 
 interpolationSchemes
-{{
+{
     default         linear;
-}}
+}
 
 snGradSchemes
-{{
+{
     default         corrected;
-}}
+}
 """
 
 FV_SOLUTION_BASE = """
 FoamFile
-{{
+{
     version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
     object      fvSolution;
-}}
+}
 
 solvers
-{{
+{
     p_rgh
-    {{
+    {
         solver          GAMG;
         tolerance       1e-7;
         relTol          0.1;
         smoother        DIC;
-    }}
+    }
     h
-    {{
+    {
         solver          smoothSolver;
         smoother        symGaussSeidel;
         tolerance       1e-8;
         relTol          0.1;
-    }}
+    }
     U
-    {{
+    {
         solver          smoothSolver;
         smoother        symGaussSeidel;
         tolerance       1e-7;
         relTol          0.1;
-    }}
-}}
+    }
+}
 
 SIMPLE
-{{
+{
     nNonOrthogonalCorrectors 0;
-}}
+}
 
 PISO
-{{
+{
     nCorrectors     2;
     nNonOrthogonalCorrectors 0;
-}}
+}
 
 relaxationFactors
-{{
+{
     equations
-    {{
+    {
         "(h|e)" 1.0;
-    }}
-}}
+    }
+}
 """
 
 REGION_PROPERTIES_TMPL = """
@@ -169,8 +169,7 @@ FoamFile
 }}
 regions
 {{
-    fluid (fluid);
-    solid ({solid_regions});
+    {regions_patches}
 }}
 
 interfaces (fluid_to_solids);
@@ -185,19 +184,19 @@ fluid_to_solids
 
 TURB_PROPS_TMPL = """
 FoamFile
-{{
+{
     version 2.0;
     format ascii;
     class dictionary;
     object turbulenceProperties;
-}}
+}
 simulationType  RAS;
 RAS
-{{
+{
     RASModel        kEpsilon;
     turbulence      on;
     printCoeffs     off;
-}}
+}
 """
 
 THERMO_FLUID_TMPL = """
@@ -324,13 +323,13 @@ FoamFile
     object T;
 }}
 dimensions      [0 0 0 1 0 0 0];
-internalField   uniform {t_amb};
+internalField   uniform {tAmb};
 boundaryField
 {{
     inlet
     {{
         type fixedValue;
-        value uniform {t_amb};
+        value uniform {tAmb};
     }}
     outlet
     {{
@@ -458,13 +457,14 @@ HEAT_SOURCE_SOLID_TMPL = """
 
 # ------------------------------ principale ------------------------------
 
-def to_list_floats(s: str) -> List[float]:
-    return [float(x.strip()) for x in s.split(',') if x.strip()] if s else []
+#def to_list_floats(s: str) -> List[float]:
+#    return [float(x.strip()) for x in s.split(',') if x.strip()] if s else []
 
 
-def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kCmp,QCmp,epsHS,dHS,kHS):
+def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kCmp,QCmp,epsHS,dHS,kHS,t_amb):
     case_dir = Path(case).absolute()
     msh = Path(msh).absolute()
+    print(msh)
 
     # 1) crea scheletro case
     for sub in ["system", "constant", "0", "constant/fluid"]:
@@ -475,8 +475,8 @@ def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kC
 
     # campi iniziali fluid
     write_text(case_dir / "0/fluid/U", U_FLUID_TMPL.format(U=Uinlet))
-    write_text(case_dir / "0/fluid/p_rgh", P_RGH_TMPL)
-    write_text(case_dir / "0/fluid/T", T_FLUID_TMPL)
+    write_text(case_dir / "0/fluid/p_rgh", P_RGH_TMPL.format())
+    write_text(case_dir / "0/fluid/T", T_FLUID_TMPL.format(tAmb=t_amb))
 
     # turbulence e termo fluido
     write_text(case_dir / "constant/turbulenceProperties", TURB_PROPS_TMPL)
@@ -485,7 +485,8 @@ def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kC
 
     # 1) importa mesh gmsh
     # Nota: gmshToFoam richiede la presenza di system/ in FOAM_CASE
-    run(["gmshToFoam", str(msh.name)], cwd=case_dir)
+    print(case_dir)
+    run(["gmshToFoam", str(msh)], cwd=case_dir)
 
     # Assicura boundary types corretti per patch "empty"
     # (adatta se serve usando changeDictionary)
@@ -520,11 +521,11 @@ def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kC
             heatsinks.append(m)
     fluid_region = "fluid"
 
-    print(f"Rilevati: {len(components)} componenti, {len(heatsinks)} heatsink. Solidi: {solids}")
+    print(f"Rilevati: {len(components)} componenti, {len(heatsinks)} heatsink. Solidi: {solids}. Mezzi porosi: {heatsinks}")
 
     # 3) termo solidi + campi 0/solid
-    k_cmp = to_list_floats(kCmp)
-    Q_cmp = to_list_floats(QCmp)
+    k_cmp = kCmp
+    Q_cmp = QCmp
     if k_cmp and len(k_cmp) != len(components):
         print("[WARN] kCmp count != nComponenti → verrà usato il primo o default per mancanti.")
     if Q_cmp and len(Q_cmp) != len(components):
@@ -533,19 +534,20 @@ def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kC
     # pcb
     write_text(case_dir / f"constant/pcb/thermophysicalProperties",
                THERMO_SOLID_TMPL.format(solid="pcb", k=kPcb, cp=cpSolid, rho=rhoSolid))
-    write_text(case_dir / f"0/pcb/T", T_SOLID_TMPL.format(solid="pcb"))
+    write_text(case_dir / f"0/pcb/T", T_SOLID_TMPL.format(solid="pcb", t_amb=t_amb))
 
     # components
     for i, comp in enumerate(components):
         k_here = k_cmp[i] if i < len(k_cmp) else (k_cmp[-1] if k_cmp else 205.0)
         write_text(case_dir / f"constant/{comp}/thermophysicalProperties",
                    THERMO_SOLID_TMPL.format(solid=comp, k=k_here, cp=cpSolid, rho=rhoSolid))
-        write_text(case_dir / f"0/{comp}/T", T_SOLID_TMPL.format(solid=comp))
+        write_text(case_dir / f"0/{comp}/T", T_SOLID_TMPL.format(solid=comp, t_amb=t_amb))
 
     # 4) porosità heatsink (Darcy–Forchheimer); mapping da eps, d → (d,f) via Ergun approx
-    eps = to_list_floats(epsHS)
-    dchar = to_list_floats(dHS)
-    k_hs = to_list_floats(kHS)
+    hs_idx=[int(hs_str.split("_")[1]) for hs_str in heatsinks]
+    eps = [epsHS[i] for i in hs_idx]
+    dchar = [dHS[i] for i in hs_idx]
+    k_hs = [kHS[i] for i in hs_idx]
     if len(eps) != len(heatsinks) or len(dchar) != len(heatsinks):
         print("[WARN] epsHS/dHS non combaciano con nHeatsink → verranno riciclati o usati default.")
 
@@ -578,10 +580,29 @@ def create_case(msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kC
     # 5) regionProperties + interfacce
     pairs = []
     all_solids = ["pcb"] + components
+    regions = """    // Fluid region
+    fluid
+    {
+        type fluid;
+        patches
+        (
+            fluid
+        );
+    }
+
+    // Solid regions"""
     for solid in all_solids:
-        pairs.append(f"        (fluid {solid})")
+        regions+=f"""
+    {solid}
+    {{
+        type solid;
+        patches
+        (
+            {solid}
+        );
+    }}"""
     regionProps = REGION_PROPERTIES_TMPL.format(
-        solid_regions=" ".join(all_solids),
+        regions_patches=regions,
         pairs="\n".join(pairs)
     )
     write_text(case_dir / "constant/regionProperties", regionProps)

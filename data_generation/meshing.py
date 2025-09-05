@@ -97,9 +97,11 @@ def generate_gmsh_mesh(
         solid_tags_2d.append(comp_tag)
         component_tags_2d.append(comp_tag) 
 
-    heatsink_tags_2d = [] 
-    for hs in heatsinks:
+    heatsink_tags_2d = []
+    heatsink_tags_id = [] 
+    for i,hs in enumerate(heatsinks):
         if abs(hs[0][1]-hs[1][1]) > tol:
+            heatsink_tags_id.append(i)
             hs_tag = gmsh.model.occ.addRectangle(
                 hs[0][0], hs[0][1], 0, hs[1][0] - hs[0][0], hs[1][1] - hs[0][1]
             )
@@ -190,7 +192,7 @@ def generate_gmsh_mesh(
     for i, vol_tag in enumerate(component_vols):
         gmsh.model.addPhysicalGroup(3, [vol_tag], name=f"component_{i}")
     for i, vol_tag in enumerate(heatsink_vols):
-        gmsh.model.addPhysicalGroup(3, [vol_tag], name=f"heatsink_{i}")
+        gmsh.model.addPhysicalGroup(3, [vol_tag], name=f"heatsink_{heatsink_tags_id[i]}")
     # =========================================================================
     # 4. ASSEGNAZIONE DEI PHYSICAL GROUPS 2D (CONFINI) -- REVISED SECTION
     # =========================================================================
