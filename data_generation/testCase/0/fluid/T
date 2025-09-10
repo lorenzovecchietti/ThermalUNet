@@ -1,0 +1,56 @@
+
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volScalarField;
+    location "0/fluid";
+    object T;
+}
+dimensions      [0 0 0 1 0 0 0];
+internalField   uniform 300;
+boundaryField
+{
+    inlet
+    {
+        type fixedValue;
+        value $internalField;
+    }
+    outlet
+    {
+        type zeroGradient;
+    }
+    walls
+    {
+        type zeroGradient;
+    }
+    empty
+    {
+        type empty;
+    }
+    "fluid_to_component.*"
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        qrNbr           none;
+        qr              none;
+        Tnbr            T;
+        kappaMethod     fluidThermo;
+        useImplicit     true;
+        value           $internalField;
+    }
+    fluid_to_pcb
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        qrNbr           none;
+        qr              none;
+        Tnbr            T;
+        kappaMethod     fluidThermo;
+        useImplicit     true;
+        value           $internalField;
+    }
+    "fluid_to_heatsink.*"
+    {
+        type            mappedFixedInternalValue;
+        value $internalField;
+    }
+}

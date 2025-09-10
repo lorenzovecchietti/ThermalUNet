@@ -130,7 +130,7 @@ def create_mesh_directory(directory="mesh_files"):
 
 # Create mesh directory
 mesh_dir = create_mesh_directory()
-fig_dir = create_mesh_directory(os.path.join(mesh_dir,"img"))
+fig_dir = create_mesh_directory(os.path.join(mesh_dir, "img"))
 
 # Generate meshes
 mesh_files = []
@@ -143,19 +143,35 @@ for i, dp in enumerate(design_points):
 generate_images(design_points, mesh_files, fig_dir)
 
 
-test_msh = os.path.join(mesh_dir,"dp_0.msh")
+test_msh = os.path.join(mesh_dir, "dp_0.msh")
 case = "./testCase"
-Uinlet=10
-rhoFluid=1
-cpFluid=2
-kFluid=2.5
-kPcb=3
-rhoSolid=4
-cpSolid=5
-kCmp=[6.1,6.2,6.3,6.4,6.5]
-QCmp=[7.1, 7.2, 7.3, 7.4, 7.5]
-epsHS=[8.1, 8.2, 8.3, 8.4, 8.5]
-dHS=[9.1, 9.2, 9.3, 9.4, 9.5]
-kHS=[10,11,12,13,14]
-t_amb=300
-create_case(test_msh,case,Uinlet,rhoFluid,cpFluid,kFluid,kPcb,rhoSolid,cpSolid,kCmp,QCmp,epsHS,dHS,kHS,t_amb)
+Uinlet = 10
+rhoFluid = 1
+cpFluid = 2
+kFluid = 2.5
+kPcb = 3
+rhoSolid = 4
+cpSolid = 5
+kCmp = [6.1, 6.2, 6.3, 6.4, 6.5]
+QCmp = [7.1, 7.2, 7.3, 7.4, 7.5]
+epsHS = [8.1, 8.2, 8.3, 8.4, 8.5]
+dHS = [9.1, 9.2, 9.3, 9.4, 9.5]
+kHS = [10, 11, 12, 13, 14]
+t_amb = 300
+create_case(
+    test_msh,
+    case,
+    Uinlet,
+    rhoFluid,
+    cpFluid,
+    kFluid,
+    kPcb,
+    rhoSolid,
+    cpSolid,
+    kCmp,
+    QCmp,
+    epsHS,
+    dHS,
+    kHS,
+    t_amb,
+)

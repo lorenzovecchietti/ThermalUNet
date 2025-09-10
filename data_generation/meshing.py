@@ -72,46 +72,50 @@ def generate_gmsh_mesh(
     # =========================================================================
     # 2D geometry creation
     # =========================================================================
-    domain_coords, pcb_coords, components, heatsinks = (
-        define_geometry(params)
-    )
+    domain_coords, pcb_coords, components, heatsinks = define_geometry(params)
     domain_tag = gmsh.model.occ.addRectangle(
-        domain_coords[0][0], domain_coords[0][1], 0,
-        domain_coords[1][0] - domain_coords[0][0], domain_coords[1][1] - domain_coords[0][1],
+        domain_coords[0][0],
+        domain_coords[0][1],
+        0,
+        domain_coords[1][0] - domain_coords[0][0],
+        domain_coords[1][1] - domain_coords[0][1],
     )
-    
+
     solid_tags_2d = []
-    
+
     # Crea tutti i solidi come entità separate
     pcb_tag = gmsh.model.occ.addRectangle(
-        pcb_coords[0][0], pcb_coords[0][1], 0, 
-        pcb_coords[1][0] - pcb_coords[0][0], pcb_coords[1][1] - pcb_coords[0][1],
+        pcb_coords[0][0],
+        pcb_coords[0][1],
+        0,
+        pcb_coords[1][0] - pcb_coords[0][0],
+        pcb_coords[1][1] - pcb_coords[0][1],
     )
     solid_tags_2d.append(pcb_tag)
-    
-    component_tags_2d = [] 
+
+    component_tags_2d = []
     for comp in components:
         comp_tag = gmsh.model.occ.addRectangle(
             comp[0][0], comp[0][1], 0, comp[1][0] - comp[0][0], comp[1][1] - comp[0][1]
         )
         solid_tags_2d.append(comp_tag)
-        component_tags_2d.append(comp_tag) 
+        component_tags_2d.append(comp_tag)
 
     heatsink_tags_2d = []
-    heatsink_tags_id = [] 
-    for i,hs in enumerate(heatsinks):
-        if abs(hs[0][1]-hs[1][1]) > tol:
+    heatsink_tags_id = []
+    for i, hs in enumerate(heatsinks):
+        if abs(hs[0][1] - hs[1][1]) > tol:
             heatsink_tags_id.append(i)
             hs_tag = gmsh.model.occ.addRectangle(
                 hs[0][0], hs[0][1], 0, hs[1][0] - hs[0][0], hs[1][1] - hs[0][1]
             )
             solid_tags_2d.append(hs_tag)
-            heatsink_tags_2d.append(hs_tag) 
+            heatsink_tags_2d.append(hs_tag)
 
     # FRAGMENTA il dominio con i solidi. Questo genera automaticamente superfici di interfaccia condivise.
     all_entities_2d = [(2, domain_tag)]
     all_entities_2d.extend([(2, tag) for tag in solid_tags_2d])
-    
+
     # L'operazione `fragment` creerà nuove entità, incluse quelle di contatto.
     fragmented_entities = gmsh.model.occ.fragment(
         [(2, domain_tag)], [(2, tag) for tag in solid_tags_2d], removeTool=True
@@ -122,10 +126,15 @@ def generate_gmsh_mesh(
     # Extrusion to 3D
     # =========================================================================
     extruded_entities = gmsh.model.occ.extrude(
-        gmsh.model.getEntities(2), 0, 0, extrusion_depth, numElements=[1], recombine=True
+        gmsh.model.getEntities(2),
+        0,
+        0,
+        extrusion_depth,
+        numElements=[1],
+        recombine=True,
     )
     gmsh.model.occ.synchronize()
-   
+
     # =========================================================================
     # 3. ASSEGNAZIONE DEI PHYSICAL GROUPS 3D (VOLUMI) -- CORRECTED SECTION
     # =========================================================================
@@ -137,28 +146,35 @@ def generate_gmsh_mesh(
     # 2. Identify each volume by comparing the XY coordinates of its center of mass
     # with the center of mass of the original 2D solids.
     # 3. Any volume not identified as a solid must be part of the fluid.
-    gmsh.model.occ.synchronize() # Ensure the model is updated
+    gmsh.model.occ.synchronize()  # Ensure the model is updated
     # Get the center of mass of the original 2D solid shapes for comparison
     com_pcb_2d = gmsh.model.occ.getCenterOfMass(2, pcb_tag)
-    com_components_2d = {tag: gmsh.model.occ.getCenterOfMass(2, tag) for tag in component_tags_2d}
-    com_heatsinks_2d = {tag: gmsh.model.occ.getCenterOfMass(2, tag) for tag in heatsink_tags_2d}
+    com_components_2d = {
+        tag: gmsh.model.occ.getCenterOfMass(2, tag) for tag in component_tags_2d
+    }
+    com_heatsinks_2d = {
+        tag: gmsh.model.occ.getCenterOfMass(2, tag) for tag in heatsink_tags_2d
+    }
     # Initialize variables to store the 3D volume tags
     fluid_vols = []
     pcb_vol = None
-    component_vols_map = {} # Use a map to keep the order correct later
+    component_vols_map = {}  # Use a map to keep the order correct later
     heatsink_vols_map = {}
     # Get all 3D entities (volumes) that now exist in the model
     volumes_3d = gmsh.model.getEntities(3)
     solid_vol_tags = set()
     for dim, tag in volumes_3d:
         com_3d = gmsh.model.occ.getCenterOfMass(dim, tag)
-       
+
         # Check if this volume corresponds to the PCB
-        if abs(com_3d[0] - com_pcb_2d[0]) < tol and abs(com_3d[1] - com_pcb_2d[1]) < tol:
+        if (
+            abs(com_3d[0] - com_pcb_2d[0]) < tol
+            and abs(com_3d[1] - com_pcb_2d[1]) < tol
+        ):
             pcb_vol = tag
             solid_vol_tags.add(tag)
             continue
-           
+
         # Check if this volume corresponds to any of the components
         identified = False
         for comp_2d_tag, com_2d in com_components_2d.items():
@@ -169,7 +185,7 @@ def generate_gmsh_mesh(
                 break
         if identified:
             continue
-           
+
         # Check for heatsinks
         for hs_2d_tag, com_2d in com_heatsinks_2d.items():
             if abs(com_3d[0] - com_2d[0]) < tol and abs(com_3d[1] - com_2d[1]) < tol:
@@ -183,8 +199,12 @@ def generate_gmsh_mesh(
     all_vol_tags = {tag for dim, tag in volumes_3d}
     fluid_vols = list(all_vol_tags - solid_vol_tags)
     # Re-order the component/heatsink vols to match the original list order
-    component_vols = [component_vols_map[t] for t in component_tags_2d if t in component_vols_map]
-    heatsink_vols = [heatsink_vols_map[t] for t in heatsink_tags_2d if t in heatsink_vols_map]
+    component_vols = [
+        component_vols_map[t] for t in component_tags_2d if t in component_vols_map
+    ]
+    heatsink_vols = [
+        heatsink_vols_map[t] for t in heatsink_tags_2d if t in heatsink_vols_map
+    ]
     # Create the Physical Groups for the volumes (this part remains the same)
     gmsh.model.addPhysicalGroup(3, fluid_vols, name="fluid")
     if pcb_vol is not None:
@@ -192,7 +212,9 @@ def generate_gmsh_mesh(
     for i, vol_tag in enumerate(component_vols):
         gmsh.model.addPhysicalGroup(3, [vol_tag], name=f"component_{i}")
     for i, vol_tag in enumerate(heatsink_vols):
-        gmsh.model.addPhysicalGroup(3, [vol_tag], name=f"heatsink_{heatsink_tags_id[i]}")
+        gmsh.model.addPhysicalGroup(
+            3, [vol_tag], name=f"heatsink_{heatsink_tags_id[i]}"
+        )
     # =========================================================================
     # 4. ASSEGNAZIONE DEI PHYSICAL GROUPS 2D (CONFINI) -- REVISED SECTION
     # =========================================================================
@@ -223,7 +245,7 @@ def generate_gmsh_mesh(
 
     for dim, tag in all_surfaces:
         com = gmsh.model.occ.getCenterOfMass(dim, tag)
-        #print(domain_max_x, com[0])
+        # print(domain_max_x, com[0])
         # PRIORITÀ 1: Facce frontali e posteriori (su Z) sono sempre 'empty'
         if abs(com[2] - z_min) < tol or abs(com[2] - z_max) < tol:
             empty_surf.append(tag)
@@ -237,7 +259,6 @@ def generate_gmsh_mesh(
         else:
             walls_surf.append(tag)
 
-
     # --- Creazione dei Physical Groups ---
     gmsh.model.addPhysicalGroup(2, list(set(inlet_surf)), name="inlet")
     gmsh.model.addPhysicalGroup(2, list(set(outlet_surf)), name="outlet")
@@ -247,7 +268,7 @@ def generate_gmsh_mesh(
     # 5. GENERAZIONE MESH 3D E SALVATAGGIO
     # =========================================================================
     gmsh.option.setNumber("Mesh.MeshSizeFactor", mesh_size)
-   
+
     # Genera la mesh 3D
     gmsh.model.mesh.generate(3)
     gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)

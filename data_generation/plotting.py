@@ -7,6 +7,7 @@ import meshio
 import numpy as np
 from meshing import define_geometry
 
+
 def plot_design_point(geometry_data: Tuple[List[Tuple[float, float]], ...]):
     """
     Plots the geometric layout of the circuit board and its components.
@@ -98,6 +99,7 @@ def plot_design_point(geometry_data: Tuple[List[Tuple[float, float]], ...]):
 
 from matplotlib.collections import PolyCollection
 
+
 def plot_msh(msh_file):
     """
     Plots a 2D slice of the 3D mesh, coloring triangles by their parent volume's physical group.
@@ -108,37 +110,43 @@ def plot_msh(msh_file):
     """
     # Load the .msh file
     mesh = meshio.read(msh_file)
-    
+
     # Check for triangle elements
     if "triangle" not in mesh.cells_dict:
-        raise ValueError("No triangle elements found in the mesh. Ensure 2D surfaces are included.")
-    
+        raise ValueError(
+            "No triangle elements found in the mesh. Ensure 2D surfaces are included."
+        )
+
     # Extract points and triangles
     points = mesh.points
     cells = mesh.cells_dict["triangle"]
-    
+
     # Extract physical tags for volumes (tetra or hexahedron)
     volume_cell_types = ["quad", "triangle", "wedge"]
     volume_cell_data = {}
     for cell_type in volume_cell_types:
         if cell_type in mesh.cells_dict and "gmsh:physical" in mesh.cell_data_dict:
-            volume_cell_data[cell_type] = mesh.cell_data_dict["gmsh:physical"].get(cell_type, [])
-    
+            volume_cell_data[cell_type] = mesh.cell_data_dict["gmsh:physical"].get(
+                cell_type, []
+            )
+
     if not volume_cell_data:
         raise ValueError("No physical tags found for volume elements.")
-    
+
     # Get physical group names from field_data
     physical_names = mesh.field_data  # Maps tag to name and dimension
-    
+
     # Filter triangles at z=0 (or close to z=0)
     tol = 1e-6
     triangle_centroids = np.mean(points[cells], axis=1)  # Centroid of each triangle
     z0_mask = np.abs(triangle_centroids[:, 2]) < tol  # Triangles at z=0
     z0_cells = cells[z0_mask]
-    
+
     if len(z0_cells) == 0:
-        raise ValueError("No triangles found at z=0. Check mesh extrusion or z-coordinate.")
-    
+        raise ValueError(
+            "No triangles found at z=0. Check mesh extrusion or z-coordinate."
+        )
+
     # Map triangles to their parent volume's physical group
     triangle_tags = np.zeros(len(z0_cells), dtype=int)
     for i, tri in enumerate(z0_cells):
@@ -148,23 +156,25 @@ def plot_msh(msh_file):
             for j, vol_cells in enumerate(mesh.cells_dict[cell_type]):
                 vol_centroid = np.mean(points[vol_cells], axis=0)
                 # Check if triangle centroid is close to volume centroid in x, y
-                if (abs(tri_centroid[0] - vol_centroid[0]) < tol and 
-                    abs(tri_centroid[1] - vol_centroid[1]) < tol):
+                if (
+                    abs(tri_centroid[0] - vol_centroid[0]) < tol
+                    and abs(tri_centroid[1] - vol_centroid[1]) < tol
+                ):
                     triangle_tags[i] = cell_block[j]
                     break
-    
+
     # Get unique physical tags for the triangles
     unique_tags = np.unique(triangle_tags)
     if len(unique_tags) == 0:
         raise ValueError("No valid physical tags assigned to triangles at z=0.")
-    
+
     # Generate a dynamic color map
     n_zones = len(unique_tags)
     dyn_colors = {tag: plt.cm.Set3(i / n_zones) for i, tag in enumerate(unique_tags)}
-    
+
     # Create the figure and axes
     fig, ax = plt.subplots(figsize=(50, 20))
-    
+
     # Prepare vertices for PolyCollection
     all_verts = []
     all_colors = []
@@ -175,22 +185,26 @@ def plot_msh(msh_file):
         all_verts.append(verts)
         color = dyn_colors[tag]
         all_colors.append(np.tile(color, (len(triangles_for_tag), 1)))
-    
+
     # Combine all vertices and colors
     all_verts = np.concatenate(all_verts, axis=0)
     all_colors = np.concatenate(all_colors, axis=0)
-    
+
     # Create PolyCollection
-    collection = PolyCollection(all_verts, facecolors=all_colors, edgecolors="k", linewidth=0.5)
+    collection = PolyCollection(
+        all_verts, facecolors=all_colors, edgecolors="k", linewidth=0.5
+    )
     ax.add_collection(collection)
-    
+
     # Add legend
     legend_elements = [
-        Patch(facecolor=dyn_colors[tag], label=physical_names.get(tag, [f"Tag {tag}"])[0])
+        Patch(
+            facecolor=dyn_colors[tag], label=physical_names.get(tag, [f"Tag {tag}"])[0]
+        )
         for tag in unique_tags
     ]
     ax.legend(handles=legend_elements, loc="upper right")
-    
+
     # Set plot limits
     ax.set_xlim(points[:, 0].min(), points[:, 0].max())
     ax.set_ylim(points[:, 1].min(), points[:, 1].max())
@@ -199,6 +213,7 @@ def plot_msh(msh_file):
     ax.set_ylabel("y")
     ax.set_aspect("equal")
     return fig, ax
+
 
 # Function to save plots as images (simulated here)
 def save_plot_as_image(fig, filename):
@@ -216,6 +231,6 @@ def generate_images(design_points, mesh_files, export_dir):
         save_plot_as_image(fig, geometry_image)
 
         # Generate and save mesh plot
-        #fig, _ = plot_msh(mesh_file)
-        #mesh_image = os.path.join(export_dir, f"dp_{i}_mesh.png")
-        #save_plot_as_image(fig, mesh_image)
+        # fig, _ = plot_msh(mesh_file)
+        # mesh_image = os.path.join(export_dir, f"dp_{i}_mesh.png")
+        # save_plot_as_image(fig, mesh_image)

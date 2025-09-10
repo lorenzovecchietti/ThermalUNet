@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       polyBoundaryMesh;
+    location    "constant/fluid/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+6
+(
+    empty
+    {
+        type            empty;
+        physicalType    empty;
+        inGroups        1(empty);
+        nFaces          21068;
+        startFace       15453;
+    }
+    walls
+    {
+        type            wall;
+        physicalType    wall;
+        inGroups        1(wall);
+        nFaces          398;
+        startFace       36521;
+    }
+    inlet
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          23;
+        startFace       36919;
+    }
+    outlet
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          23;
+        startFace       36942;
+    }
+    fluid_to_component_0
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          61;
+        startFace       36965;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_0;
+        samplePatch     component_0_to_fluid;
+    }
+    fluid_to_pcb
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          191;
+        startFace       37026;
+        sampleMode      nearestPatchFace;
+        sampleRegion    pcb;
+        samplePatch     pcb_to_fluid;
+    }
+)
+
+// ************************************************************************* //

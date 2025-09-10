@@ -1,0 +1,22 @@
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      changeDictionaryDict;
+}
+boundary
+{
+        empty
+        {
+            type            empty;
+            physicalType    empty;
+        }
+        walls
+        {
+            type            wall;
+            physicalType    wall;
+        }
+}

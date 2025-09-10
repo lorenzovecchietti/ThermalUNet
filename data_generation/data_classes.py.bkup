@@ -6,7 +6,7 @@ BOUNDS = {
     "w": (10, 20),
     "pcb_h": (0.05, 0.1),
     "pcb_w": (0.6, 0.9),
-    "n_up": (0, 1),
+    "n_up": (0, 5),
     "components_w": (0.01, 0.99),
     "components_h": (1, 2),
     "heatsink": (0, 1),
