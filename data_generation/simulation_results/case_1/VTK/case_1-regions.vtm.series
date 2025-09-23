@@ -1,7 +1,0 @@
-{
-  "file-series-version" : "1.0",
-  "files" : [
-    { "name" : "case_1-regions_1500.vtm", "time" : 1500 },
-    { "name" : "case_1-regions_3000.vtm", "time" : 3000 }
-  ]
-}
