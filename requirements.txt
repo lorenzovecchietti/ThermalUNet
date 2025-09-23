@@ -3,3 +3,4 @@ numpy
 gmsh
 scipy
 meshio
+vtk
