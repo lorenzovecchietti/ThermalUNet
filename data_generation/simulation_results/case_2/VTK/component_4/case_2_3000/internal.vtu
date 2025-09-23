@@ -1,0 +1,37 @@
+<?xml version='1.0'?>
+<!-- case='case_2' region='component_4' time='3000' index='3000' -->
+<VTKFile type='UnstructuredGrid' version='0.1' byte_order='LittleEndian' header_type='UInt64'>
+  <UnstructuredGrid>
+    <FieldData>
+      <DataArray type='Float32' Name='TimeValue' NumberOfTuples='1' format='binary'>
+BAAAAAAAAAAAgDtF
+      </DataArray>
+    </FieldData>
+    <Piece NumberOfPoints='30' NumberOfCells='8'>
+      <Points>
+        <DataArray type='Float32' Name='Points' NumberOfComponents='3' format='binary'>
+aAEAAAAAAACDvCBBrBjpPgAAAADWlCNBrBjpPgAAAACDvCBBCmu5PgAAAADWlCNBCmu5PgAAAADWlCNBrBjpPs3MTD6DvCBBrBjpPs3MTD7WlCNBCmu5Ps3MTD6DvCBBCmu5Ps3MTD6YciFBrBjpPgAAAACtKCJBrBjpPgAAAADB3iJBrBjpPgAAAACDvCBB20HRPgAAAADB3iJBCmu5PgAAAACtKCJBCmu5PgAAAACYciFBCmu5PgAAAADWlCNB20HRPgAAAACYciFBrBjpPs3MTD6tKCJBrBjpPs3MTD7B3iJBrBjpPs3MTD7WlCNB20HRPs3MTD7B3iJBCmu5Ps3MTD6tKCJBCmu5Ps3MTD6YciFBCmu5Ps3MTD6DvCBB20HRPs3MTD7DJyJB4GzRPgAAAAB53iJBtE7RPgAAAADscSFBV1/RPgAAAADDJyJB4GzRPs3MTD553iJBtE7RPs3MTD7scSFBV1/RPs3MTD4=
+        </DataArray>
+      </Points>
+      <Cells>
+        <DataArray type='Int32' Name='connectivity' format='binary'>
+AAEAAAAAAAAYAAAADQAAABUAAAAbAAAAGgAAAA4AAAAWAAAAHQAAABkAAAAMAAAAFAAAABwAAAAYAAAADQAAABUAAAAbAAAAGQAAAA8AAAATAAAAHAAAAAwAAAADAAAABgAAABQAAAAaAAAAHQAAABcAAAALAAAADgAAABYAAAAHAAAAAgAAABkAAAAKAAAAEgAAABwAAAAPAAAAAQAAAAQAAAATAAAAGAAAAAkAAAARAAAAGwAAABkAAAAKAAAAEgAAABwAAAAaAAAACAAAABAAAAAdAAAAGAAAAAkAAAARAAAAGwAAAAsAAAAaAAAACAAAAAAAAAAXAAAAHQAAABAAAAAFAAAA
+        </DataArray>
+        <DataArray type='Int32' Name='offsets' format='binary'>
+IAAAAAAAAAAIAAAAEAAAABgAAAAgAAAAKAAAADAAAAA4AAAAQAAAAA==
+        </DataArray>
+        <DataArray type='UInt8' Name='types' format='binary'>
+CAAAAAAAAAAMDAwMDAwMDA==
+        </DataArray>
+      </Cells>
+      <CellData>
+        <DataArray type='Float32' Name='T' format='binary'>
+IAAAAAAAAAAAABZEAAAWRAAAFkQAABZEAAAWRAAAFkQAABZEAAAWRA==
+        </DataArray>
+        <DataArray type='Float32' Name='p' format='binary'>
+IAAAAAAAAACA5sVHgObFR4DmxUeA5sVHgObFR4DmxUeA5sVHgObFRw==
+        </DataArray>
+      </CellData>
+    </Piece>
+  </UnstructuredGrid>
+</VTKFile>
