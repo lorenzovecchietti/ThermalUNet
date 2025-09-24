@@ -1,0 +1,94 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    arch        "LSB;label=32;scalar=64";
+    class       volScalarField;
+    location    "2000/component_0";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   nonuniform List<scalar> 
+93
+(BàÙÖõu@»{¬T«u@}ı]7;v@"È
+ç9‚u@ßD‰çO=v@GÃ]$u@(%sR©©v@™Ïúmu@3PóÎÉu@Aí\@Õ8v@< qØu@y‘ÂÕìÄu@êwhÛXv@h»ø3=v@ÉÇñ„Nv@›sâ‹İ:v@ë¯URÚ^v@éÖÒ7ç~v@
+¤ ç!¡v@ÎùÄùğv@¸URŒó7u@Şg6u@\ ái@pv@ç'üu@£a$„Áèu@®0VûRv@e4ó¶@[u@N¥±íÇxu@§˜iru@Î*HÀ3©v@Şë„¡—³u@x¼‰v@ÀH
+¢'v@2ìáı·v@/»ğ xv@¦öp4’cv@öiòTãšv@¥“É“v@2
+x4)‹v@sVÃ3ówv@ïm´^*v@¬Õ”:öv@yLŞu@«9ìlşÔv@é–§ 9ev@wÜßRİv@%ëU{év@	aF‘­u@	`£u@?.D"©Ãu@ÈhşŠv@WLÆrÏµv@?jœ×‘u@9öjşÔv@ }³úv@ˆ]’üôùv@Y½A¬¯Üv@\=Â¦ªÅv@ãˆ]²u@*¸.¢ÿu@°
+G€µ³u@®À¡‚®Øv@ÑŠ$GàÕv@:Cn$×ºv@¿OÛ3v@sE‚Ø/v@,Ó òÉv@¦­1ñ v@Ï5$Ìv@…
+k¤v@ãI_yv@(cÌ±Jv@—°4I±õv@'…mÁ©ìv@àßfıœ®u@_­jù}v@×‹W"’v@zt÷É´u@.ó­Zv@“ûíÖ§u@¨îhhuu@<á0<u@\7{òu@Ğâ¹‘v@öáî±t@Ò%Â®ût@¸M]²v@'šâ¼}wu@¸îS‹Áu@úÜ/„[v@°ÁƒÓ\xv@ŒUK±–u@J¿@Œ¯u@);
+
+boundaryField
+{
+    empty
+    {
+        type            empty;
+    }
+    component_0_to_pcb
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        useImplicit     true;
+        refValue        nonuniform List<scalar> 
+18
+(İzØÕŠu@2öíz§âu@mÒIèWqv@ˆß,CRv@—È•…v@e{¿}½ƒv@:˜–‚yv@×YQa[ov@Š…üÔ1u@?¥ Jv@‚1õK+v@Ä‚¤ñ¿¿u@e&f» v@:”Ñ~v@z<ì(v@…-Â/`v@>¦Ã’ãüu@¨‡+7ñt@);
+        refGradient     uniform 0;
+        valueFraction   nonuniform List<scalar> 
+18
+( êºP{á†?è™Ü¥¾v‡? Š{“%‹?6!îÃXŠ?Y1±‰?_Å‡æn~‰?7¯B›ˆ˜‰?p«(©+‰?˜”Èæ£_‚?)©,ü½ˆ?:<CßZB‡?İ}Âí9ú{?×ç™aˆ?D9ßÕŠ?¿'¸‹È‰?R5NNúôˆ?^ÿ‰¦¶õ{?¶f8ÆY†?);
+        source          nonuniform List<scalar> 
+18
+(c~î²İmô¿nW÷ Õ‡õ¿ÀšÔr³ƒù¿Û’.¬©ø¿#XzÆÈ¢ù¿c¨69Wéù¿Õ@b=<Vù¿ºÂì1Çù¿0@­à|ô¿V‹šKpø¿|BÖÛ÷¿ÌñŞ¿+ö¿¶—°ÁÕö¿ùŠF¶Kù¿ECsù¿à{›ï{Ïø¿fb;GÕö¿¦Ûô‡ÚWó¿);
+        value           nonuniform List<scalar> 
+18
+(íÛk6v@ÿ=±	´Qv@
+’¢ßÀÓv@2°¿l´v@P_I
+fôv@&CÌ±øv@–Ú–Ğôv@»´ã@Eëv@rQ^â¸v@š0XÄv@´x}õ§v@ÚtdÂ¨Zv@Ì’W´N‰v@áTÙ!0èv@Ø¼øv@ŠàlèQÛv@˜¶’¸wv@‡¯³0Æu@);
+        logInterval     -1;
+        writePrecision  8;
+        updateHeader    1;
+        writeToFile     0;
+        useUserTime     1;
+        kappaMethod     solidThermo;
+    }
+    component_0_to_fluid
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        useImplicit     true;
+        refValue        nonuniform List<scalar> 
+30
+(Ø…¯®‚%s@–ÇÓ8Zs@tr°5Åÿr@ø+6<!s@Ë¨çfJÈr@op½Ä¤ s@˜F“È s@vëLEÏr@²|
+½s@(^ûŠs@½YÑf€s@ÿät¬s@kZJ§s@Ë@-† s@šaÏ#s@ínygs@É˜­»s@u÷oÙÉr@¬Ş9v"^s@Óœô.%Èr@Bvá)1Ws@2E|ØİMs@®³€—éÄr@.®_RİÅr@øÍ"Çr@bâŒ!Ss@Yÿ‰oöÈr@ûF œZs@HûÒÔïs@cr” s@);
+        refGradient     uniform 0;
+        valueFraction   nonuniform List<scalar> 
+30
+(LË ”êæ„?³f¥q?jáÓK–k?xa¿qVè…?ñV¬çğ…?Ñy3ğ!a†?62b%†?ÛëÁo¯D?€»ív«r?óœÇÇw‡?û‘ÀULH„?lœ¹W´ğ„?c^ê™@ƒ?´Ûá':—…?C?qä‚?æ0¹v?£mşåƒ?ªí«¯øcv?X{7ädo?å®ÔQ<y?3wí•Pék?LÕFqÊce?Ùú8šÅ}?¨8ò}M|?ÿŸËCÏäv?‡ÑP¢Ã¯d?22Ä5šx?ÇÃãÄoo?Ÿñ>ùàp?<j2Â­ßn?);
+        source          nonuniform List<scalar> 
+30
+(O>IdÖU@l5+!t,9@$Oõ÷ô:@Æî0Å(¦V@CÕ3­°áQ@!xÍ98W@ŒãæÒW@s.8“GQ@)ñŸøß	F@ö¹èæ×U@Ò
+‡šDW@˜$ãrQW@3^†İ34V@®<­|W@'µŞ€­cV@êu±¾s-N@uğ,G®V@…¹ç@xE@÷ÑÇdn\:@²›<«G@úÎOÎ¤?@fÊ¶Ã¢<@±Yq?}M@=±§*PòE@~ùUû„G@û T¸@@â£aUjG@Ïf02s>@bÛ†Ü—S@íıãÑPQ@);
+        value           nonuniform List<scalar> 
+30
+(ËÆîÒM
+u@ƒ·zu@ñ‹–Î#Æu@š÷N81u@šÈøt0u@#ÁWjßSu@ßØWõpu@€*Æ	mu@_ÑúW[°u@ôfA[¢Ôu@—œ‚â(¥u@ûaT€›u@ÁŞôY»u@ÆÑ}õˆu@sk>zªu@.¯	,¯u@ê'ö.h¦u@şüd’u£u@ñÁw7Ôru@µ¾Û¼b8u@j
+ÇÚ?ğu@¤Şïv@bSb+X®t@}?V,‡®t@c$WB“øt@2½Ó"v@³j‰Ysu@Â„ŸĞ¿u@L7×ÙD«u@|^{Êu’u@);
+        logInterval     -1;
+        writePrecision  8;
+        updateHeader    1;
+        writeToFile     0;
+        useUserTime     1;
+        kappaMethod     solidThermo;
+    }
+}
+
+
+// ************************************************************************* //

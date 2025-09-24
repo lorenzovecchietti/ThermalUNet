@@ -1,0 +1,68 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : changeDictionary
+Date   : Sep 23 2025
+Time   : 23:52:58
+Host   : instance-20250906-0051
+PID    : 231664
+I/O    : uncollated
+Case   : /home/ubuntu/ThermalUNet/data_generation/simulation_results/case_23
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Read dictionary changeDictionaryDict with replacements for dictionaries 1(boundary)
+Reading polyMesh/boundary file to extract patch names
+Loaded dictionary boundary with entries 4(empty walls inlet outlet)
+Replacing entries in dictionary boundary
+Special handling of boundary as polyMesh/boundary file.
+Merging entries from 2(empty walls)
+fieldDict:
+{
+    empty
+    {
+        type            empty;
+        physicalType    patch;
+        nFaces          20544;
+        startFace       20298;
+    }
+    walls
+    {
+        type            wall;
+        physicalType    patch;
+        nFaces          392;
+        startFace       40842;
+    }
+    inlet
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          50;
+        startFace       41234;
+    }
+    outlet
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          50;
+        startFace       41284;
+    }
+}
+
+Writing modified boundary
+
+End
+

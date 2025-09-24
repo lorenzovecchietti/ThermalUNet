@@ -1,0 +1,104 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : gmshToFoam circuit_mesh.msh
+Date   : Sep 24 2025
+Time   : 01:46:28
+Host   : instance-20250906-0051
+PID    : 232598
+I/O    : uncollated
+Case   : /home/ubuntu/ThermalUNet/data_generation/simulation_results/case_69
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Starting to read mesh format at line 2
+Read format version 2.2  ascii 0
+
+Starting to read physical names at line 5
+Physical names:11
+    Surface 8	inlet
+    Surface 9	outlet
+    Surface 10	walls
+    Surface 11	empty
+    Volume 1	fluid
+    Volume 2	pcb
+    Volume 3	component_0
+    Volume 4	component_1
+    Volume 5	component_2
+    Volume 6	component_3
+    Volume 7	component_4
+
+Starting to read points at line 19
+Vertices to be read: 21340
+Vertices read:21340
+
+Starting to read cells at line 21362
+Cells to be read: 32315
+
+Mapping region 11 to Foam patch 0
+Mapping region 10 to Foam patch 1
+Mapping region 8 to Foam patch 2
+Mapping region 9 to Foam patch 3
+Mapping region 2 to Foam cellZone 0
+Mapping region 3 to Foam cellZone 1
+Mapping region 4 to Foam cellZone 2
+Mapping region 5 to Foam cellZone 3
+Mapping region 6 to Foam cellZone 4
+Mapping region 7 to Foam cellZone 5
+Mapping region 1 to Foam cellZone 6
+Cells:
+    total:10425
+    hex  :10421
+    prism:4
+    pyr  :0
+    tet  :0
+
+CellZones:
+Zone	Size
+    0	704
+    1	320
+    2	217
+    3	105
+    4	456
+    5	313
+    6	8310
+
+Patch 0 gets name empty
+Patch 1 gets name walls
+Patch 2 gets name inlet
+Patch 3 gets name outlet
+
+--> FOAM Warning : 
+    From Foam::polyMesh::polyMesh(const Foam::IOobject&, Foam::pointField&&, const Foam::cellShapeList&, const Foam::faceListList&, const Foam::wordList&, const Foam::wordList&, const Foam::word&, const Foam::word&, const Foam::wordList&, bool)
+    in file meshes/polyMesh/polyMeshFromShapeMesh.C at line 635
+    Found 21342 undefined faces in mesh; adding to default patch defaultFaces
+Finding faces of patch 0
+Finding faces of patch 1
+Finding faces of patch 2
+Finding faces of patch 3
+
+FaceZones:
+Zone	Size
+    1	548
+
+Writing zone 0 to cellZone pcb and cellSet
+Writing zone 1 to cellZone component_0 and cellSet
+Writing zone 2 to cellZone component_1 and cellSet
+Writing zone 3 to cellZone component_2 and cellSet
+Writing zone 4 to cellZone component_3 and cellSet
+Writing zone 5 to cellZone component_4 and cellSet
+Writing zone 6 to cellZone fluid and cellSet
+Writing zone 1 to faceZone walls and faceSet
+End
+
