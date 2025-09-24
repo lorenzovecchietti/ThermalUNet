@@ -1,0 +1,8 @@
+limitTair
+{
+    type limitTemperature;
+    selectionMode all;
+    min 310;
+    max 500;
+    phase air;
+}
