@@ -1,0 +1,50 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+    class           dictionary;
+    location        system;
+    object          probesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+_volFieldValue
+{
+    type            volFieldValue;
+    libs            (fieldFunctionObjects);
+    enabled         true;
+    writeControl    timeStep;
+    writeInterval   1;
+    log             true;
+    valueOutput     false;
+    writeFields     false;
+}
+
+fluid
+{
+    ${_volFieldValue}
+
+    regionType      cellZone;
+    name            fluid;
+    region          fluid;
+    operation       volAverage;
+    fields          ( T );
+}
+
+pcb
+{
+    ${_volFieldValue}
+
+    regionType      cellZone;
+    name            pcb;
+    region          pcb;
+    operation       volAverage;
+    fields          ( T );
+}

@@ -1,48 +1,50 @@
 from dataclasses import dataclass
 from typing import List
+from collections import OrderedDict
 
-BOUNDS = {
-    "h": (1, 5),
-    "w": (10, 20),
-    "pcb_h": (0.05, 0.1),
-    "pcb_w": (0.6, 0.9),
-    "n_up": (0, 5),
-    "components_w": (0.01, 0.99),
-    "components_h": (1, 2),
-    "heatsink": (0, 1),
-    "p_pcb": (0.1, 1.0),
-    "p_comps": (1.0, 10.0),
-    "k_pcb": (0.1, 1.0),
-    "k_comps": (10.0, 100.0),
-    "k_heatsinks": (100.0, 300.0),
-    "porosity_heatsinks": (0.1, 0.5),
-}
+BOUNDS = OrderedDict(
+    {
+        # "h": (1, 5),
+        # "w": (10, 20),
+        "h_pcb": (0.05, 0.1),
+        "w_pcb": (0.6, 0.9),
+        "n_up": (0, 5),
+        "w_comps": (0.01, 0.99),
+        "h_comps": (1, 2),
+        "u_fluid": (0.5, 3.0),
+        "p_comps": (500.0, 5000.0),
+        "k_pcb": (0.1, 1.0),
+        "k_comps": (10.0, 100.0),
+    }
+)
+
+u_bounds = []
+l_bounds = []
+for k, v in BOUNDS.items():
+    if k.endswith("comps"):
+        u_bounds.extend([v[1]] * BOUNDS["n_up"][1])
+        l_bounds.extend([v[0]] * BOUNDS["n_up"][1])
+    else:
+        u_bounds.append(v[1])
+        l_bounds.append(v[0])
 
 
 @dataclass
 class ThermalProperties:
-    p_pcb: float
     p_comps: List[float]
     k_pcb: float
     k_comps: List[float]
-    k_heatsinks: List[float]
-    porosity_heatsinks: List[float]
 
     def __post_init__(self):
         # Validate single-value attributes
-        single_values = {"p_pcb": self.p_pcb, "k_pcb": self.k_pcb}
+        single_values = {"k_pcb": self.k_pcb}
         for attr, value in single_values.items():
             min_val, max_val = BOUNDS[attr]
             if not (min_val <= value <= max_val):
                 raise ValueError(f"{attr} must be between {min_val} and {max_val}")
 
         # Validate list-based attributes
-        list_values = [
-            (self.p_comps, "p_comps"),
-            (self.k_comps, "k_comps"),
-            (self.k_heatsinks, "k_heatsinks"),
-            (self.porosity_heatsinks, "porosity_heatsinks"),
-        ]
+        list_values = [(self.p_comps, "p_comps"), (self.k_comps, "k_comps")]
 
         for component_list, attr_name in list_values:
             min_val, max_val = BOUNDS[attr_name]
@@ -55,22 +57,21 @@ class ThermalProperties:
 
 @dataclass
 class CircuitBoard:
-    h: int
-    w: int
-    pcb_h: float
-    pcb_w: float
+    h_pcb: float
+    w_pcb: float
     n_up: int
-    components_w: List[float]
-    components_h: List[float]
-    heatsink: List[int]
+    w_comps: List[float]
+    h_comps: List[float]
+    h: int = 5
+    w: int = 20
 
     def __post_init__(self):
         # Maps attributes to their names and values for validation
         attributes = {
-            "h": self.h,
-            "w": self.w,
-            "pcb_h": self.pcb_h,
-            "pcb_w": self.pcb_w,
+            # "h": self.h,
+            # "w": self.w,
+            "h_pcb": self.h_pcb,
+            "w_pcb": self.w_pcb,
             "n_up": self.n_up,
         }
 
@@ -82,9 +83,8 @@ class CircuitBoard:
 
         # components and heatsink attributes
         for component_list, attr_name in [
-            (self.components_w, "components_w"),
-            (self.components_h, "components_h"),
-            (self.heatsink, "heatsink"),
+            (self.w_comps, "w_comps"),
+            (self.h_comps, "h_comps"),
         ]:
             min_val, max_val = BOUNDS[attr_name]
             for val in component_list:
