@@ -1,0 +1,61 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : foamToVTK -fields (p U T) -no-boundary -noFunctionObjects -allRegions -no-point-data -noZero
+Date   : Sep 25 2025
+Time   : 00:00:51
+Host   : instance-20250906-0051
+PID    : 244674
+I/O    : uncollated
+Case   : /home/ubuntu/ThermalUNet/data_generation/simulation_results/of/case_28
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Point fields and interpolated point data disabled with the '-no-point-data' option
+Including fields (p U T)
+
+Create time
+
+--> FOAM Warning : 
+    From static Foam::instantList Foam::timeSelector::select0(Foam::Time&, const Foam::argList&)
+    in file db/Time/timeSelector.C at line 284
+    No time specified or available, selecting 'constant'
+Using all regions: (fluid pcb component_0 component_1 component_2 component_3 component_4)
+Initial memory 122268 kB
+Create mesh fluid for time = constant
+Create mesh pcb for time = constant
+Create mesh component_0 for time = constant
+Create mesh component_1 for time = constant
+Create mesh component_2 for time = constant
+Create mesh component_3 for time = constant
+Create mesh component_4 for time = constant
+
+VTK mesh topology: 0.06 s, 127956 kB
+Time: constant
+region = fluid
+    Internal  : "VTK/fluid/case_28_0/internal.vtu"
+region = pcb
+    Internal  : "VTK/pcb/case_28_0/internal.vtu"
+region = component_0
+    Internal  : "VTK/component_0/case_28_0/internal.vtu"
+region = component_1
+    Internal  : "VTK/component_1/case_28_0/internal.vtu"
+region = component_2
+    Internal  : "VTK/component_2/case_28_0/internal.vtu"
+region = component_3
+    Internal  : "VTK/component_3/case_28_0/internal.vtu"
+region = component_4
+    Internal  : "VTK/component_4/case_28_0/internal.vtu"
+Wrote in 0.06 s, 129436 kB
+
+End: 0.12 s, 129436 kB (peak)
+

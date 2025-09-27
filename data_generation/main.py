@@ -1,14 +1,15 @@
 import json
 import os
-import vtk
-import numpy as np
-import subprocess
-from scipy.stats.qmc import LatinHypercube
 import shutil
+import subprocess
 
-from data_classes import CircuitBoard, BOUNDS, ThermalProperties, l_bounds, u_bounds
-from openfoam import create_foam_case
+import numpy as np
+import vtk
+from data_classes import (BOUNDS, CircuitBoard, ThermalProperties, l_bounds,
+                          u_bounds)
 from meshing import generate_gmsh_mesh
+from openfoam import create_foam_case
+from scipy.stats.qmc import LatinHypercube
 
 
 def main():
@@ -23,7 +24,7 @@ def main():
 
     ref_dir = "baseCase"  # Assume reference OpenFOAM case directory exists
     os.mkdir("simulation_results")
-    os.mkdir("dataset")
+    os.mkdir("simulation_results/dataset")
     for i in range(N):
         sample_list = scaled_samples[i]
         sample = {}
@@ -58,7 +59,7 @@ def main():
         u = sample["u_fluid"]
 
         # Create OpenFOAM case
-        main_dir = os.path.join("simulation_results", f"case_{i}")
+        main_dir = os.path.join("simulation_results", "of", f"case_{i}")
         # os.mkdir(main_dir)
         create_foam_case(ref_dir, main_dir, BOUNDS["n_up"][1], u, thermal, NITER)
 
@@ -71,7 +72,7 @@ def main():
         # image_file = os.path.join(main_dir, "mesh_image.png")
         # save_plot_as_image(fig, image_file)
         print(f"Solving case {i}...")
-        subprocess.run("./Allrun", cwd=f"./simulation_results/case_{i}")
+        subprocess.run("./Allrun", cwd=f"./simulation_results/of/case_{i}")
         gnu_args = [
             "gnuplot",
             "-e",
@@ -87,9 +88,12 @@ def main():
             )
 
         gnu_args[2] += " ".join(plot_commands)
-        subprocess.run(gnu_args, cwd=f"./simulation_results/case_{i}/postProcessing")
+        subprocess.run(gnu_args, cwd=f"./simulation_results/of/case_{i}/postProcessing")
 
         # vti creation
+        if str(NITER) not in os.listdir(main_dir):
+            print(f"+++ Case {i} was not solved correctly. +++")
+            continue
         reader = vtk.vtkXMLMultiBlockDataReader()
         reader.SetFileName(
             os.path.join(main_dir, "VTK", f"case_{i}-regions_{NITER}.vtm")
@@ -154,9 +158,9 @@ def main():
         writer.SetFileName(os.path.join(main_dir, "VTK", f"case_{i}.vti"))
         writer.SetInputData(resampled_data)
         writer.Write()
-        dst_dir = os.path.join("dataset", f"case_{i}")
+        dst_dir = os.path.join("simulation_results", "dataset", f"case_{i}")
         os.makedirs(dst_dir)
-        src_dir = f"simulation_results/case_{i}/VTK"
+        src_dir = f"simulation_results/of/case_{i}/VTK"
         src_file = os.path.join(src_dir, f"case_{i}.vti")
         shutil.copy2(src_file, dst_dir)
         shutil.rmtree(src_dir)

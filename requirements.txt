@@ -1,6 +1,9 @@
+torch
 matplotlib
 numpy
 gmsh
 scipy
 meshio
 vtk
+pyvista
+tqdm

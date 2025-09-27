@@ -1,0 +1,91 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    arch        "LSB;label=32;scalar=64";
+    class       polyBoundaryMesh;
+    location    "constant/pcb/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+7
+(
+    empty
+    {
+        type            empty;
+        physicalType    patch;
+        inGroups        1(empty);
+        nFaces          776;
+        startFace       645;
+    }
+    pcb_to_component_4
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          10;
+        startFace       1421;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_4;
+        samplePatch     component_4_to_pcb;
+    }
+    pcb_to_component_2
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          6;
+        startFace       1431;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_2;
+        samplePatch     component_2_to_pcb;
+    }
+    pcb_to_fluid
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          170;
+        startFace       1437;
+        sampleMode      nearestPatchFace;
+        sampleRegion    fluid;
+        samplePatch     fluid_to_pcb;
+    }
+    pcb_to_component_0
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          6;
+        startFace       1607;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_0;
+        samplePatch     component_0_to_pcb;
+    }
+    pcb_to_component_3
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          30;
+        startFace       1613;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_3;
+        samplePatch     component_3_to_pcb;
+    }
+    pcb_to_component_1
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          36;
+        startFace       1643;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_1;
+        samplePatch     component_1_to_pcb;
+    }
+)
+
+// ************************************************************************* //

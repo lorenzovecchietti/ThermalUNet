@@ -1,0 +1,82 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    arch        "LSB;label=32;scalar=64";
+    class       volScalarField;
+    location    "2000/component_1";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   nonuniform List<scalar> 
+8
+(Âéõ{@v`#~Jz@z–¯Rz@|­ÍÜ¬}{@İ-ço{@cÛñèx@\Ã/É,y@¹@yÃìz@);
+
+boundaryField
+{
+    empty
+    {
+        type            empty;
+    }
+    component_1_to_fluid
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        useImplicit     true;
+        refValue        nonuniform List<scalar> 
+10
+(#iB)3ır@.P›SQs@ ¾ÄŒO×r@(ıå«ør@-sŸÎx-s@×yL¤ Òr@FÊÎr@<y|İs@œÛZBÖr@«#N.¼Şr@);
+        refGradient     uniform 0;
+        valueFraction   nonuniform List<scalar> 
+10
+(ÑËxQòd?ó	Oâe?ô+Ô›v?Pñî‰©Ğb?B»“öc?ÇIU€W¯|?-$Æö´ˆ‚?ÈÏO-+6n?ø½[‚v×?ÏXÀ%¾p?);
+        source          nonuniform List<scalar> 
+10
+(m‡‘‹˜P@\P)ğrO@¶ÓKE _@ÏKŒ=aO@¯¬šP@°P$^õæ`@$qbÄÎd@™Ş"fB“R@?Å¦Id@‘)‰ÿZ@);
+        value           nonuniform List<scalar> 
+10
+(p3ûJ{@Ä¸zVJz@z…şÓöz@¹ÃûÖx{@ãìğåj{@öûD&ÿâx@2èÄßx@?{Í0]9y@àÌmæì0y@àÖäz@);
+        logInterval     -1;
+        writePrecision  8;
+        updateHeader    1;
+        writeToFile     0;
+        useUserTime     1;
+        kappaMethod     solidThermo;
+    }
+    component_1_to_pcb
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        useImplicit     true;
+        refValue        nonuniform List<scalar> 
+2
+("¾(Iiw@'«¿_gw@);
+        refGradient     uniform 0;
+        valueFraction   nonuniform List<scalar> 
+2
+(GMMIv—†?—Şó$†?);
+        source          nonuniform List<scalar> 
+2
+(Û5ˆ­²‚À…Ş‘q”À);
+        value           nonuniform List<scalar> 
+2
+(øº<(®d{@S>‹Sr{@);
+        logInterval     -1;
+        writePrecision  8;
+        updateHeader    1;
+        writeToFile     0;
+        useUserTime     1;
+        kappaMethod     solidThermo;
+    }
+}
+
+
+// ************************************************************************* //

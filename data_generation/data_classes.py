@@ -1,6 +1,6 @@
+from collections import OrderedDict
 from dataclasses import dataclass
 from typing import List
-from collections import OrderedDict
 
 BOUNDS = OrderedDict(
     {
@@ -12,7 +12,7 @@ BOUNDS = OrderedDict(
         "w_comps": (0.01, 0.99),
         "h_comps": (1, 2),
         "u_fluid": (0.5, 3.0),
-        "p_comps": (500.0, 5000.0),
+        "p_comps": (500.0, 1500.0),
         "k_pcb": (0.1, 1.0),
         "k_comps": (10.0, 100.0),
     }
