@@ -1,4 +1,6 @@
 torch
+torchvision
+torchaudio
 matplotlib
 numpy
 gmsh
@@ -8,3 +10,5 @@ vtk
 pyvista
 tqdm
 optuna
+scikit-learn
+pandas
