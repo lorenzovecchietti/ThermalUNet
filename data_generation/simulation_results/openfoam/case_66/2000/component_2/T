@@ -1,0 +1,84 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    arch        "LSB;label=32;scalar=64";
+    class       volScalarField;
+    location    "2000/component_2";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   nonuniform List<scalar> 
+60
+(19&æÜ:v@!ÓFÙv@ı‘æàÏw@×å¨7*x@?oÄÛ*0t@N,sô¬Èw@ÿÛß×¦u@t¤5ï-9v@ú›ugĞ§v@“d¨íu¤v@ ]rSw@f*„°t@V‹ı$¾v@œôËæÖu@ÕD„Âpv@¤xNÑv@­—°yôu@ü$\ö*™w@Ş¿Àö–w@^tfïÄRw@¡¾,€~áv@¯úŒ÷Çw@+`=‘\ãw@”†o%w@0¡²‡¯v@bôkf6x@îÉØWè7x@ »_iu@ƒu3E—¹w@LÇ57.êu@´ã.#x@™;|Wêu@O™ç3º‚v@LÔyŠYCx@Ñd½u^¨u@àû
+ #x@{/	Å2x@ºoêÒu@†:!SÊÃv@téÎx@Õ6Œ’iÄt@ÀÏßKÚu@µÍ0ğ-¯w@šÚl[uv@â=[v@J5Lw@ìsf­úêu@¥0ù¤Bu@É"ühº¬w@›ñş—º_u@»'ù¸òw@Û‹Ò®†ew@@®à<½mw@ù11ÍMÙw@ĞMª¸ìw@n)ÕbG®u@;¼óJÎXv@¿³kûM>w@X_–„Ô-w@t˜AÉ]w@);
+
+boundaryField
+{
+    empty
+    {
+        type            empty;
+    }
+    component_2_to_pcb
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        useImplicit     true;
+        refValue        nonuniform List<scalar> 
+10
+(â˜[~'w@,ua£2v@;Hû¯ô0w@Ğ0îZG‰u@…H†4quv@3ÁQU´Kw@ÜH>;œ8w@ŞÖ‡ÿŞv@G´ŸZOw@E˜=¹&¶v@);
+        refGradient     uniform 0;
+        valueFraction   nonuniform List<scalar> 
+10
+(!êƒ*ã¢?JzMD:¦?ÆÙh¡?ümeöª?\_I*B¡?:/%\pØ¢?µ@k0¦?0åÓñf¢?¥v3ûÃ€¢?æŠë‘`„«?);
+        source          nonuniform List<scalar> 
+10
+(Lå–ß„>ş¿à¯ß“:ü¿ù³Y/ùü¿^°³!1˜ı¿l£Îzbfø¿PBb!ùñş¿‰&‘ĞßŠÀ´9ïnÁü¿œ—AIŸş¿òã¦À);
+        value           nonuniform List<scalar> 
+10
+(>°wüûw@q‘ßZlÊv@¯Gs÷.x@3«İÔë/v@†ñO4PKw@JÕ¤)x@Xİiâ«x@Á¹?½±w@Ñ}éÌ…:x@.>†é¹w@);
+        logInterval     -1;
+        writePrecision  8;
+        updateHeader    1;
+        writeToFile     0;
+        useUserTime     1;
+        kappaMethod     solidThermo;
+    }
+    component_2_to_fluid
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        useImplicit     true;
+        refValue        nonuniform List<scalar> 
+22
+(µ$n³âïr@˜põú÷r@ì†U­Ws@8Sv~s@°×Ö•]s@P„î½J:s@p	|Ø.ór@äÂNÎEs@D­ñör@ş‚¼E¿úr@W#|[es@Òrì©ƒs@2ÔX'tşr@3áYSûs@|Ô›âs@lØùîZs@j-l“.is@0İ‡Ó(s@#8-^s@§DS]h`s@èòÄªøes@cp¬Àãs@);
+        refGradient     uniform 0;
+        valueFraction   nonuniform List<scalar> 
+22
+(G¯wºH÷–?u¹,ô–?\\£7j?ì®f¤ğŒ?ÌİÖ~£¥|?ÜÓc-S`€?MctÇ”?Ô‘ğŒ?ç¡e¢""“?5ÜÙÃ
+’?Ñ¨ÎŠÀ7?ğÂå[ß?i¸ÑĞ6‘?¡’3ÿøX?´ÖèFgÿ’??‰pS	m?;qdPwµe?púÉH5ë†?"fº,?[G+]ç1m?`¤Xøn?0{j%D‹?);
+        source          nonuniform List<scalar> 
+22
+(½ø	¶tA@¹¤=@Ïá_ù1;,@âŠõ'ÂD@›fµ›C"2@X_y|¦8@„}¯jàD@DÃ©´€F@ıéC-ÃF@õ§"øŠÙG@Om’ÔëAH@Bc*u‹G@ß[8gH@†‘ß6…H@)ŞìáHA@eTÒó¯˜/@“3A–ÖÙ!@4O£’@@–9ÎäBB@lfó½£.@k„ÌûC©-@c=Õ“B@);
+        value           nonuniform List<scalar> 
+22
+(B×Eş(t@Æn…-)t@ñÒÅw@çLŸ»u@.Ş¡½½¢u@4²\q3v@¹¦»|§t@@ôĞ†ÉÌu@ÓaÆOÌu@^"Xi^u@Éé…ñäŞu@íx'‡ßu@#	²éœu@»·ÌiÇu@¨D^ì"¼t@Ü“Áİ=«w@^ĞÜ`Isv@]¤š'×ûu@PòCÛ9u@Ì~jw@Øóğ›iw@B&;>…¥u@);
+        logInterval     -1;
+        writePrecision  8;
+        updateHeader    1;
+        writeToFile     0;
+        useUserTime     1;
+        kappaMethod     solidThermo;
+    }
+}
+
+
+// ************************************************************************* //

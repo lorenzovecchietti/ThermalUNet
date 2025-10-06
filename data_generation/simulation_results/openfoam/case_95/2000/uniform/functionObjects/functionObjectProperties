@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       dictionary;
+    location    "2000/uniform/functionObjects";
+    object      functionObjectProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+cdf7e925f5746741c316f5fbcf39ad0dfca90775
+{
+    fluid
+    {
+        scalar
+        {
+            volAverage(fluid,T) 300.2563024686724;
+        }
+    }
+    pcb
+    {
+        scalar
+        {
+            volAverage(pcb,T) 311.4261516543705;
+        }
+    }
+    component_0
+    {
+        scalar
+        {
+            volAverage(component_0,T) 343.5240326454925;
+        }
+    }
+    component_1
+    {
+        scalar
+        {
+            volAverage(component_1,T) 361.6209668740137;
+        }
+    }
+    component_2
+    {
+        scalar
+        {
+            volAverage(component_2,T) 322.3112391626781;
+        }
+    }
+    component_3
+    {
+        scalar
+        {
+            volAverage(component_3,T) 324.6900613781535;
+        }
+    }
+    component_4
+    {
+        scalar
+        {
+            volAverage(component_4,T) 316.3367584339018;
+        }
+    }
+}
+
+
+// ************************************************************************* //

@@ -7,3 +7,4 @@ meshio
 vtk
 pyvista
 tqdm
+optuna
