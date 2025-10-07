@@ -5,8 +5,7 @@ import subprocess
 
 import numpy as np
 import vtk
-from data_classes import (BOUNDS, CircuitBoard, ThermalProperties, l_bounds,
-                          u_bounds)
+from data_classes import BOUNDS, CircuitBoard, ThermalProperties, l_bounds, u_bounds
 from meshing import generate_gmsh_mesh
 from openfoam import create_foam_case
 from scipy.stats.qmc import LatinHypercube
@@ -22,7 +21,7 @@ def main():
     u_bounds_arr = np.array(u_bounds)
     scaled_samples = samples * (u_bounds_arr - l_bounds_arr) + l_bounds_arr
 
-    ref_dir = "baseCase"  # Assume reference OpenFOAM case directory exists
+    ref_dir = "baseCase"
     os.mkdir("simulation_results")
     os.mkdir("simulation_results/dataset")
     for i in range(N):
@@ -58,7 +57,6 @@ def main():
 
         # Create OpenFOAM case
         main_dir = os.path.join("simulation_results", "openfoam", f"case_{i}")
-        # os.mkdir(main_dir)
         create_foam_case(ref_dir, main_dir, BOUNDS["n_up"][1], u, thermal, NITER)
 
         # Generate mesh inside the case
@@ -83,7 +81,9 @@ def main():
             )
 
         gnu_args[2] += " ".join(plot_commands)
-        subprocess.run(gnu_args, cwd=f"./simulation_results/openfoam/case_{i}/postProcessing")
+        subprocess.run(
+            gnu_args, cwd=f"./simulation_results/openfoam/case_{i}/postProcessing"
+        )
 
         # vti creation
         if str(NITER) not in os.listdir(main_dir):
@@ -101,7 +101,7 @@ def main():
                 block_name = multi_block_data.GetMetaData(j).Get(
                     vtk.vtkCompositeDataSet.NAME()
                 )
-                conducibility_value = 0.0  # O un altro valore sensato per il fluido
+                conducibility_value = 0.0
                 power_value = 0.0
                 if block_name == "pcb":
                     conducibility_value = thermal.k_pcb
@@ -135,7 +135,6 @@ def main():
         append_filter = vtk.vtkAppendFilter()
         for j in range(multi_block_data.GetNumberOfBlocks()):
             block = multi_block_data.GetBlock(j)
-            # each sub-block has just 1 block
             append_filter.AddInputData(block.GetBlock(0))
         append_filter.Update()
         unified_data = append_filter.GetOutput()
@@ -174,11 +173,12 @@ def main():
             json.dump(boundary, f)
 
     archive_path = shutil.make_archive(
-            base_name=os.path.join("simulation_results", "dataset"),
-            format="zip",
-            root_dir=os.path.join("simulation_results", "dataset")
+        base_name=os.path.join("simulation_results", "dataset"),
+        format="zip",
+        root_dir=os.path.join("simulation_results", "dataset"),
     )
     shutil.rmtree(os.path.join("simulation_results", "dataset"))
+
 
 if __name__ == "__main__":
     main()

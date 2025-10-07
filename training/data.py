@@ -8,6 +8,7 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from torch.utils.data import DataLoader, Dataset, Subset
 from tqdm import tqdm
 
+# Define device
 if torch.cuda.is_available():
     try:
         assert torch.cuda.get_device_name(1)
@@ -90,20 +91,14 @@ class VTI_Dataset(Dataset):
 
             unnormalized_targets = torch.stack([T_tensor, Ux_tensor, Uy_tensor], dim=0)
 
-            min_vals_view = self.min_vals.view(
-                3, 1, 1, 1
-            ).cpu()
-            range_vals_view = self.range_vals.view(
-                3, 1, 1, 1
-            ).cpu()
+            min_vals_view = self.min_vals.view(3, 1, 1, 1).cpu()
+            range_vals_view = self.range_vals.view(3, 1, 1, 1).cpu()
 
             normalized_targets = (
                 unnormalized_targets - min_vals_view
             ) / range_vals_view
 
-            self.data.append(
-                (input_tensor.squeeze(1), normalized_targets.squeeze(1))
-            )
+            self.data.append((input_tensor.squeeze(1), normalized_targets.squeeze(1)))
 
     def denormalize(self, normalized_tensor: torch.Tensor) -> torch.Tensor:
         if self.min_vals is None or self.range_vals is None:

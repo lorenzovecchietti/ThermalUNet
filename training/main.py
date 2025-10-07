@@ -33,9 +33,11 @@ CONFIG = {
     "TRIALS": 15,
 }
 
-T_AMB=300
+T_AMB = 300
+
 
 def main(temp_dir):
+    # Unzip & load data
     with zipfile.ZipFile(CONFIG["DATA"], "r") as zip_ref:
         zip_ref.extractall(temp_dir.name)
     print("Unzipping complete.")
@@ -49,6 +51,8 @@ def main(temp_dir):
     params_name = "best_params.json"
     model_save = os.path.join(CONFIG["MODEL_SAVE_PATH"], model_name)
     params_save = os.path.join(CONFIG["MODEL_SAVE_PATH"], params_name)
+
+    # Optimize & Train
     if not (os.path.isfile(model_save) and os.path.isfile(params_save)):
         study = optuna.create_study(direction="minimize")
         study.optimize(
@@ -101,7 +105,7 @@ def main(temp_dir):
             vti_val_dataloader,
             CONFIG["EPOCHS"],
             device,
-            log_pbar=True
+            log_pbar=True,
         )
 
         torch.save(net.state_dict(), model_save)
@@ -125,6 +129,7 @@ def main(temp_dir):
             )
         )
 
+    # Evaluate
     net.load_state_dict(torch.load(model_save))
     evaluate_model(net, vti_val_dataloader, device, full_dataset)
 
