@@ -1,0 +1,65 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : foamToVTK -fields (p U T) -no-boundary -noFunctionObjects -allRegions -no-point-data -noZero
+Date   : Oct 04 2025
+Time   : 21:56:49
+Host   : instance-20250906-0051
+PID    : 100432
+I/O    : uncollated
+Case   : /home/ubuntu/ThermalUNet/data_generation/simulation_results/openfoam/case_9
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Point fields and interpolated point data disabled with the '-no-point-data' option
+Including fields (p U T)
+
+Create time
+
+Using all regions: (fluid pcb component_0 component_1 component_2 component_3 component_4)
+Initial memory 122268 kB
+Create mesh fluid for time = 2000
+Create mesh pcb for time = 2000
+Create mesh component_0 for time = 2000
+Create mesh component_1 for time = 2000
+Create mesh component_2 for time = 2000
+Create mesh component_3 for time = 2000
+Create mesh component_4 for time = 2000
+
+VTK mesh topology: 0.02 s, 127844 kB
+Time: 2000
+region = fluid
+    volScalar    : T p
+    volVector    : U
+    Internal  : "VTK/fluid/case_9_2000/internal.vtu"
+region = pcb
+    volScalar    : T p
+    Internal  : "VTK/pcb/case_9_2000/internal.vtu"
+region = component_0
+    volScalar    : T p
+    Internal  : "VTK/component_0/case_9_2000/internal.vtu"
+region = component_1
+    volScalar    : T p
+    Internal  : "VTK/component_1/case_9_2000/internal.vtu"
+region = component_2
+    volScalar    : T p
+    Internal  : "VTK/component_2/case_9_2000/internal.vtu"
+region = component_3
+    volScalar    : T p
+    Internal  : "VTK/component_3/case_9_2000/internal.vtu"
+region = component_4
+    volScalar    : T p
+    Internal  : "VTK/component_4/case_9_2000/internal.vtu"
+Wrote in 0.18 s, 129832 kB
+
+End: 0.2 s, 129832 kB (peak)
+

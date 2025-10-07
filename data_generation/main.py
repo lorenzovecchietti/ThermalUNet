@@ -14,7 +14,7 @@ from scipy.stats.qmc import LatinHypercube
 
 def main():
     NITER = 2000
-    N = 75  # Number of design points to generate
+    N = 100  # Number of design points to generate
     d = len(l_bounds)
     sampler = LatinHypercube(d=d)
     samples = sampler.random(n=N)
@@ -40,8 +40,6 @@ def main():
 
         # Create CircuitBoard instance
         circuit_board = CircuitBoard(
-            # h=int(sample["h"]),
-            # w=int(sample["w"]),
             h_pcb=sample["h_pcb"],
             w_pcb=sample["w_pcb"],
             n_up=int(sample["n_up"]),
@@ -59,7 +57,7 @@ def main():
         u = sample["u_fluid"]
 
         # Create OpenFOAM case
-        main_dir = os.path.join("simulation_results", "of", f"case_{i}")
+        main_dir = os.path.join("simulation_results", "openfoam", f"case_{i}")
         # os.mkdir(main_dir)
         create_foam_case(ref_dir, main_dir, BOUNDS["n_up"][1], u, thermal, NITER)
 
@@ -68,11 +66,8 @@ def main():
         generate_gmsh_mesh(circuit_board, mesh_size=0.05, output_file=mesh_file)
 
         # Create and save mesh image inside the case
-        # fig, _ = plot_msh(mesh_file)
-        # image_file = os.path.join(main_dir, "mesh_image.png")
-        # save_plot_as_image(fig, image_file)
         print(f"Solving case {i}...")
-        subprocess.run("./Allrun", cwd=f"./simulation_results/of/case_{i}")
+        subprocess.run("./Allrun", cwd=f"./simulation_results/openfoam/case_{i}")
         gnu_args = [
             "gnuplot",
             "-e",
@@ -88,7 +83,7 @@ def main():
             )
 
         gnu_args[2] += " ".join(plot_commands)
-        subprocess.run(gnu_args, cwd=f"./simulation_results/of/case_{i}/postProcessing")
+        subprocess.run(gnu_args, cwd=f"./simulation_results/openfoam/case_{i}/postProcessing")
 
         # vti creation
         if str(NITER) not in os.listdir(main_dir):
@@ -145,7 +140,7 @@ def main():
         append_filter.Update()
         unified_data = append_filter.GetOutput()
         probe_grid = vtk.vtkImageData()
-        probe_grid.SetDimensions(401, 101, 1)
+        probe_grid.SetDimensions(400, 100, 1)
         probe_grid.SetSpacing(0.05, 0.05, 1.0)
         probe_grid.SetOrigin(0.0, 0.0, 0.0)
         probe_filter = vtk.vtkProbeFilter()
@@ -160,7 +155,7 @@ def main():
         writer.Write()
         dst_dir = os.path.join("simulation_results", "dataset", f"case_{i}")
         os.makedirs(dst_dir)
-        src_dir = f"simulation_results/of/case_{i}/VTK"
+        src_dir = os.path.join(main_dir, "VTK")
         src_file = os.path.join(src_dir, f"case_{i}.vti")
         shutil.copy2(src_file, dst_dir)
         shutil.rmtree(src_dir)
@@ -178,6 +173,12 @@ def main():
         with open(os.path.join(dst_dir, "boundary.json"), "w") as f:
             json.dump(boundary, f)
 
+    archive_path = shutil.make_archive(
+            base_name=os.path.join("simulation_results", "dataset"),
+            format="zip",
+            root_dir=os.path.join("simulation_results", "dataset")
+    )
+    shutil.rmtree(os.path.join("simulation_results", "dataset"))
 
 if __name__ == "__main__":
     main()

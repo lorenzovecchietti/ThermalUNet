@@ -1,0 +1,113 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    arch        "LSB;label=32;scalar=64";
+    class       polyBoundaryMesh;
+    location    "constant/fluid/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+10
+(
+    empty
+    {
+        type            empty;
+        physicalType    patch;
+        inGroups        1(empty);
+        nFaces          18464;
+        startFace       18048;
+    }
+    walls
+    {
+        type            wall;
+        physicalType    patch;
+        inGroups        1(wall);
+        nFaces          392;
+        startFace       36512;
+    }
+    inlet
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          50;
+        startFace       36904;
+    }
+    outlet
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          50;
+        startFace       36954;
+    }
+    fluid_to_pcb
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          170;
+        startFace       37004;
+        sampleMode      nearestPatchFace;
+        sampleRegion    pcb;
+        samplePatch     pcb_to_fluid;
+    }
+    fluid_to_component_1
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          30;
+        startFace       37174;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_1;
+        samplePatch     component_1_to_fluid;
+    }
+    fluid_to_component_3
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          14;
+        startFace       37204;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_3;
+        samplePatch     component_3_to_fluid;
+    }
+    fluid_to_component_2
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          24;
+        startFace       37218;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_2;
+        samplePatch     component_2_to_fluid;
+    }
+    fluid_to_component_0
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          84;
+        startFace       37242;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_0;
+        samplePatch     component_0_to_fluid;
+    }
+    fluid_to_component_4
+    {
+        type            mappedWall;
+        inGroups        1(wall);
+        nFaces          18;
+        startFace       37326;
+        sampleMode      nearestPatchFace;
+        sampleRegion    component_4;
+        samplePatch     component_4_to_fluid;
+    }
+)
+
+// ************************************************************************* //
