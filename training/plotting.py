@@ -18,14 +18,15 @@ def plot_loss_history(train_loss, val_loss, config):
     plt.savefig(os.path.join(config["MODEL_SAVE_PATH"], "losshistory.png"))
 
 
-def plot_comparison(dataset, inputs, targets, outputs,config, u_free, t_amb, sample_idx=0):
+def plot_comparison(
+    dataset, inputs, targets, outputs, config, u_free, t_amb, sample_idx=0
+):
     """
     Plots a 4-column comparison: Target, Prediction, Absolute Error, Relative Error.
     """
     fields = ["T", "Ux", "Uy"]
 
     # Denormalize for visualization
-    # Ensure inputs, targets, and outputs are on CPU before converting to numpy
     targets_denorm = dataset.denormalize(targets.unsqueeze(0))[0].cpu().numpy()
     outputs_denorm = dataset.denormalize(outputs.unsqueeze(0))[0].cpu().numpy()
 

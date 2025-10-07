@@ -29,7 +29,6 @@ class ConvBNAct(nn.Module):
             bias=False,
         )
         self.bn = nn.BatchNorm2d(out_ch)
-        # supporta sia ReLU che LeakyReLU
         if act is nn.ReLU:
             self.act = nn.ReLU(inplace=True)
         else:
@@ -57,8 +56,6 @@ class DoubleConv(nn.Module):
 # Encoder (downsampling)
 # -----------------------
 class EncoderBlock(nn.Module):
-    """Downsample via conv stride=2 then refine (no pooling)"""
-
     def __init__(self, in_ch, out_ch, dropout=0.0, act=nn.LeakyReLU):
         super().__init__()
         self.down = ConvBNAct(
@@ -103,13 +100,10 @@ class AttentionGate(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, g, x):
-        # g: gating feature (from decoder, smaller or equal spatial dim)
-        # x: skip feature (from encoder)
         g1 = self.W_g(g)
         x1 = self.W_x(x)
         psi = self.relu(g1 + x1)
         psi = self.psi(psi)
-        # ensure same spatial size as x
         if psi.shape[2:] != x.shape[2:]:
             psi = F.interpolate(
                 psi, size=x.shape[2:], mode="bilinear", align_corners=True
@@ -128,24 +122,18 @@ class DecoderBlock(nn.Module):
         out_ch: desired output channels after the block (typically = skip_ch)
         """
         super().__init__()
-        # After upsample we apply a conv to map in_ch -> out_ch (so g and skip have comparable channels)
         self.up_conv = ConvBNAct(
             in_ch, out_ch, kernel_size=3, stride=1, padding=1, act=nn.ReLU
         )
-        # Attention gate takes g (out_ch) and x (skip_ch); internal channels at least 1
         self.attn = AttentionGate(F_g=out_ch, F_l=skip_ch, F_int=max(1, out_ch // 2))
-        # After concat: (out_ch + skip_ch) -> out_ch
         self.double_conv = DoubleConv(out_ch + skip_ch, out_ch, act=nn.ReLU)
         self.drop = nn.Dropout2d(dropout) if dropout > 0.0 else nn.Identity()
 
     def forward(self, x, skip):
-        # Upsample x to skip spatial size to avoid rounding mismatch
         x = F.interpolate(x, size=skip.shape[2:], mode="bilinear", align_corners=True)
         x = self.up_conv(x)
         x = self.drop(x)
-        # Apply attention on skip using gating x
         skip_att = self.attn(g=x, x=skip)
-        # Concatenate and refine
         x = torch.cat([x, skip_att], dim=1)
         x = self.double_conv(x)
         return x
@@ -165,10 +153,8 @@ class UNet(nn.Module):
         super().__init__()
         c = base_channels
 
-        # initial conv (no downsample) -> S0
         self.conv_in = DoubleConv(in_channels, c, act=nn.LeakyReLU)
 
-        # encoder path -> produce S1, S2, S3, S4
         self.enc1 = EncoderBlock(c, c * 2, dropout=dropout, act=nn.LeakyReLU)
         self.enc2 = EncoderBlock(c * 2, c * 4, dropout=dropout, act=nn.LeakyReLU)
         self.enc3 = EncoderBlock(c * 4, c * 8, dropout=dropout, act=nn.LeakyReLU)
@@ -176,29 +162,41 @@ class UNet(nn.Module):
             c * 8, c * 8, dropout=dropout, act=nn.LeakyReLU
         )  # keep top channels = 8c
 
-        # bottleneck (refinement on the deepest features)
         self.bottleneck = DoubleConv(c * 8, c * 8, act=nn.LeakyReLU)
 
-        # decoder path: mirror with attention
         # -----------------------
-        # DECODER VELOCITÀ (RAMO 1)
+        # DECODER VELOCITY
         # -----------------------
-        # Nota: usiamo parametri completamente indipendenti per ogni ramo
-        self.dec4_vel = DecoderBlock(in_ch=c * 8, skip_ch=c * 8, out_ch=c * 8, dropout=dropout)
-        self.dec3_vel = DecoderBlock(in_ch=c * 8, skip_ch=c * 4, out_ch=c * 4, dropout=dropout)
-        self.dec2_vel = DecoderBlock(in_ch=c * 4, skip_ch=c * 2, out_ch=c * 2, dropout=dropout)
-        self.dec1_vel = DecoderBlock(in_ch=c * 2, skip_ch=c * 1, out_ch=c * 1, dropout=dropout)
+        self.dec4_vel = DecoderBlock(
+            in_ch=c * 8, skip_ch=c * 8, out_ch=c * 8, dropout=dropout
+        )
+        self.dec3_vel = DecoderBlock(
+            in_ch=c * 8, skip_ch=c * 4, out_ch=c * 4, dropout=dropout
+        )
+        self.dec2_vel = DecoderBlock(
+            in_ch=c * 4, skip_ch=c * 2, out_ch=c * 2, dropout=dropout
+        )
+        self.dec1_vel = DecoderBlock(
+            in_ch=c * 2, skip_ch=c * 1, out_ch=c * 1, dropout=dropout
+        )
         self.final_conv_vel = nn.Conv2d(c, 2, kernel_size=1, stride=1, padding=0)
 
         # -----------------------
-        # DECODER TEMPERATURA (RAMO 2)
+        # DECODER TEMPERATURE
         # -----------------------
-        self.dec4_temp = DecoderBlock(in_ch=c * 8, skip_ch=c * 8, out_ch=c * 8, dropout=dropout)
-        self.dec3_temp = DecoderBlock(in_ch=c * 8, skip_ch=c * 4, out_ch=c * 4, dropout=dropout)
-        self.dec2_temp = DecoderBlock(in_ch=c * 4, skip_ch=c * 2, out_ch=c * 2, dropout=dropout)
-        self.dec1_temp = DecoderBlock(in_ch=c * 2, skip_ch=c * 1, out_ch=c * 1, dropout=dropout)
+        self.dec4_temp = DecoderBlock(
+            in_ch=c * 8, skip_ch=c * 8, out_ch=c * 8, dropout=dropout
+        )
+        self.dec3_temp = DecoderBlock(
+            in_ch=c * 8, skip_ch=c * 4, out_ch=c * 4, dropout=dropout
+        )
+        self.dec2_temp = DecoderBlock(
+            in_ch=c * 4, skip_ch=c * 2, out_ch=c * 2, dropout=dropout
+        )
+        self.dec1_temp = DecoderBlock(
+            in_ch=c * 2, skip_ch=c * 1, out_ch=c * 1, dropout=dropout
+        )
         self.final_conv_temp = nn.Conv2d(c, 1, kernel_size=1, stride=1, padding=0)
-
 
     def forward(self, x):
         # Encoder
@@ -211,32 +209,22 @@ class UNet(nn.Module):
         # Bottleneck
         b = self.bottleneck(x4)
 
-        # Decoder (note: we concatenate with skips in reverse order: S3, S2, S1, S0)
-        # -----------------------
-        # Decoder Velocità (Ramo 1)
-        # -----------------------
-        d_vel = self.dec4_vel(b, x3)  # Usa i parametri dec_vel e skip x3
+        # Decoder Vel
+        d_vel = self.dec4_vel(b, x3)
         d_vel = self.dec3_vel(d_vel, x2)
         d_vel = self.dec2_vel(d_vel, x1)
         d_vel = self.dec1_vel(d_vel, x0)
 
         out_vel = self.final_conv_vel(d_vel)
 
-        # -----------------------
-        # Decoder Temperatura (Ramo 2)
-        # -----------------------
-        d_temp = self.dec4_temp(b, x3)  # Usa i parametri dec_temp e gli stessi skip x3
+        # Decoder Temperature
+        d_temp = self.dec4_temp(b, x3)
         d_temp = self.dec3_temp(d_temp, x2)
         d_temp = self.dec2_temp(d_temp, x1)
         d_temp = self.dec1_temp(d_temp, x0)
 
         out_temp = self.final_conv_temp(d_temp)
-
-        # -----------------------
-        # Output Finale
-        # -----------------------
-        # Concatenazione dei due output per avere l'output a 2 canali
-        out = torch.cat([out_temp,out_vel], dim=1)
+        out = torch.cat([out_temp, out_vel], dim=1)
         return out
 
 
@@ -247,6 +235,7 @@ class CombinedLoss(nn.Module):
 
     def forward(self, outputs, targets):
         return self.mse.forward(outputs, targets)
+
 
 # ==============================================================================
 # --- Early Stopping ---
@@ -284,19 +273,13 @@ def train_and_validate(
     device,
     log_pbar=False,
 ):
-    """
-    Funzione riutilizzabile per l'addestramento e la validazione di un'epoca.
-    Ritorna la cronologia delle perdite e la perdita di validazione minima.
-    """
     train_loss_hist = []
     val_loss_hist = []
     min_val_loss = float("inf")
 
-    # Usa tqdm solo se richiesto dalla chiamata (solo nel main finale)
     iterator = tqdm(range(epochs)) if log_pbar else range(epochs)
 
     for _ in iterator:
-        # --- Training ---
         net.train()
         train_loss_acc = 0
         for inputs, targets in train_dataloader:
@@ -359,17 +342,14 @@ def psnr(target, prediction, max_val=1.0):
 
 
 def evaluate_model(model, dataloader, device, dataset):
-    """Evaluates the model on the test set, calculating L1, MSE, and PSNR."""
     model.eval()
     total_l1, total_mse, total_psnr = 0, 0, 0
     criterion_mse = nn.MSELoss()
 
     with torch.no_grad():
         for inputs, targets in dataloader:
-            # inputs and targets are already on device from __getitem__
             outputs = model(inputs)
 
-            # Denormalize to calculate metrics in the original domain
             targets_denorm = dataset.denormalize(targets.cpu())
             outputs_denorm = dataset.denormalize(outputs.cpu())
 

@@ -18,7 +18,7 @@ def objective(trial, device, config, train_dataset, val_dataset, test_dataset):
         train_dataset, val_dataset, test_dataset, batch_size, config["WORKERS"]
     )
 
-    # Configurazione di Modello, Optimizer, Scheduler, etc.
+    # Model configuration
     net = UNet(channels, dropout).to(device)
     loss_fn = CombinedLoss()
     optimizer = optim.Adam(
@@ -33,7 +33,7 @@ def objective(trial, device, config, train_dataset, val_dataset, test_dataset):
     scaler = amp.GradScaler(enabled=torch.cuda.is_available())
     early_stopper = EarlyStopper(patience=10)
 
-    # Chiama la funzione di addestramento estratta
+    # Training
     _, _, min_val_loss = train_and_validate(
         net,
         loss_fn,
@@ -45,7 +45,7 @@ def objective(trial, device, config, train_dataset, val_dataset, test_dataset):
         vti_test_dataloader,
         config["EPOCHS"],
         device,
-        log_pbar=False,  # Nessun logging verbose per Optuna
+        log_pbar=False,  # No logging for Optuna
     )
 
     return min_val_loss
