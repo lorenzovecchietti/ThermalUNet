@@ -1,6 +1,6 @@
 # Thermal UNet: Attention-Augmented Architecture for Coupled $T$ and $\mathbf{u}$ Prediction
 
-The **Thermal UNet** is a specialized UNet designed for predicting 2D **temperature** ($T$) and **velocity fields** ($\mathbf{u} = \\{U_x,U_y\\}$) from inputs like thermal conductivity, power and boundary conditions.
+The **Thermal UNet** is a specialized UNet designed for predicting 2D **temperature**, $T$, and **velocity fields**, $\mathbf{u} = \\{U_x,U_y\\}$, from inputs like thermal conductivity, power and boundary conditions.
 
 ---
 
